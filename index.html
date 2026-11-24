@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#e66ba9">
+<link rel="manifest" href="manifest.webmanifest">
+<title>Ultimate Clicker V48</title>
+<style>
+:root{color-scheme:dark;--bg:#171311;--panel:#251c19;--line:#49332c;--text:#fff4e9;--muted:#c5aaa0;--red:#e34b35;--gold:#ffca70}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#482019,#171311 55%);color:var(--text);font-family:system-ui,-apple-system,sans-serif}
+main{position:relative;z-index:1;max-width:620px;margin:auto;padding:15px 14px 30px}.brand{text-align:center;padding:12px 0 16px}.brand h1{font-size:29px;margin:0;font-weight:900;letter-spacing:-1px}.brand p{color:var(--muted);margin:3px 0;font-size:13px}
+.panel{background:linear-gradient(145deg,#2b211d,#211916);border:1px solid var(--line);border-radius:17px;padding:14px;margin:10px 0;box-shadow:0 7px 20px #0003}
+.balance{text-align:center}.eyebrow{font-size:11px;color:var(--muted);font-weight:800;letter-spacing:1.5px}.number{font-size:clamp(32px,9vw,46px);font-weight:950;line-height:1.15;margin:7px 0;overflow-wrap:anywhere}.sub{font-size:13px;color:var(--muted)}
+button{border:0;border-radius:12px;padding:12px;color:var(--text);font-weight:800;font-size:14px;cursor:pointer;touch-action:manipulation}
+button:disabled{opacity:.4;cursor:not-allowed}button,.panel,.statbox,.item{transition:transform .22s cubic-bezier(.2,.85,.25,1.35),box-shadow .22s ease,background-color .22s ease}button:not(:disabled):active{transform:scale(.96)}.tap{width:184px;height:184px;min-height:0;margin:16px auto 12px;background:radial-gradient(circle at 38% 30%,#ff9877 0%,#f04b35 42%,#c52c20 72%,#8d1c18 100%);border:5px solid #ffb08c;border-radius:50%;box-shadow:0 9px 0 #701b18,0 14px 24px #0006;color:white;font-size:17px;position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:0;aspect-ratio:1}
+.tap:active{transform:translateY(5px) scale(.98);box-shadow:0 4px 0 #701b18,0 8px 15px #0005}.tap .pepper{font-size:82px;line-height:1;display:block;filter:drop-shadow(0 5px 3px #64160f)}
+.cursor-swarm{position:absolute;inset:0;pointer-events:none;z-index:3}.cursor-swarm span{position:absolute;font-size:19px;filter:drop-shadow(0 2px 2px #321);transform:translate(-50%,-50%);animation:cursorBob 1.4s ease-in-out infinite alternate}@keyframes cursorBob{to{translate:0 -4px}}
+.hands{position:absolute;inset:0;pointer-events:none;display:none}.hands span{position:absolute;font-size:29px;filter:drop-shadow(0 2px 2px #4c100c);animation:handtap .52s ease-in-out infinite alternate}.hands span:first-child{left:8%;top:44%;transform-origin:bottom right}.hands span:last-child{right:8%;top:44%;animation-delay:.26s;transform-origin:bottom left}
+@keyframes handtap{from{translate:0 0;scale:1}to{translate:0 13px;scale:.88}}
+#music{background:#33231e;border:1px solid var(--line);padding:9px 12px;font-size:12px;margin-top:8px}
+.confetti{position:fixed;z-index:99;top:-30px;pointer-events:none;font-size:22px;animation:confettifall 2.5s ease-in forwards}
+@keyframes confettifall{to{transform:translate(var(--drift),105vh) rotate(720deg);opacity:.1}}
+.float{position:absolute;pointer-events:none;font-size:20px;font-weight:950;color:#ffe09a;text-shadow:0 2px 4px #5b170d;animation:floatup .85s ease-out forwards;white-space:nowrap}
+@keyframes floatup{0%{opacity:0;transform:translateY(8px) scale(.7)}15%{opacity:1}100%{opacity:0;transform:translateY(-65px) scale(1.12)}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}.statbox{text-align:center;background:#1d1715;border:1px solid var(--line);border-radius:13px;padding:11px}.statbox b{display:block;font-size:23px;overflow-wrap:anywhere}
+.gold{background:linear-gradient(120deg,#ffd27b,#e89b35);color:#3c210c;width:100%;margin-top:10px}.bar{height:9px;background:#49332c;border-radius:20px;overflow:hidden;margin-top:9px}.bar>div{height:100%;background:linear-gradient(90deg,#ffcc76,#ed633a);width:0}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:12px 0}.tab{background:#291e1a;border:1px solid var(--line)}.tab.active{background:#7d2b20;border-color:#ef7650;box-shadow:0 4px 15px #ef765033}
+.item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--line)}.item:last-child{border:0}.item strong{font-size:14px}.item small{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:3px}.buy{background:#4b2c23;border:1px solid #a65338;min-width:106px;font-size:12px;padding:10px 8px}.muted{color:var(--muted);font-size:12px}
+.actions{display:flex;gap:8px}.actions button{flex:1;background:#33231e;border:1px solid var(--line);font-size:12px}
+
+.devgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.devprices{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin:8px 0 14px}.devprice{display:flex;flex-direction:column;gap:4px;background:#1d1715;border:1px solid var(--line);border-radius:9px;padding:8px;font-size:10px;color:var(--muted)}.devprice input{width:100%;min-width:0;background:#171311;border:1px solid #795044;border-radius:7px;padding:8px;color:var(--text);font:inherit;font-size:12px}
+.devgrid label{font-size:11px;color:var(--muted);font-weight:700;display:flex;flex-direction:column;gap:5px}
+.devgrid input{width:100%;min-width:0;background:#171311;border:1px solid #795044;border-radius:9px;padding:10px;color:var(--text);font:inherit}
+.objective{display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12px}
+.objective:last-child{border:0}.objective.done{color:#9be3a4}
+.tap{animation:pepperPulse 2.2s ease-in-out infinite}
+@keyframes pepperPulse{0%,100%{filter:drop-shadow(0 0 0 #ff8b4a00)}50%{filter:drop-shadow(0 0 13px #ff8b4a88)}}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.13;background-image:radial-gradient(#ffd28b 1px,transparent 1px);background-size:38px 38px;animation:driftbg 24s linear infinite}
+@keyframes driftbg{to{background-position:152px 152px}}
+.note{text-align:center;color:var(--muted);font-size:11px;min-height:18px;margin-top:9px}
+.rebirth-sticky{position:relative;top:auto;z-index:1;box-shadow:0 7px 20px #0003;border-color:#b87b37;background:linear-gradient(120deg,#38271a,#241a16);margin-top:4px}
+.shop-track{display:flex;flex-flow:column nowrap;align-items:stretch;width:100%;max-width:100%;min-width:0;height:min(68vh,620px);min-height:280px;overflow-y:auto;overflow-x:hidden;overscroll-behavior-y:contain;scroll-snap-type:y proximity;scrollbar-width:thin;scrollbar-color:var(--gold) #49332c;-webkit-overflow-scrolling:touch;scroll-behavior:auto;touch-action:pan-y;gap:0;anchor-name:none}
+.shop-track::-webkit-scrollbar{width:8px}.shop-track::-webkit-scrollbar-thumb{background:var(--gold);border-radius:8px}
+.shop-page{box-sizing:border-box;flex:0 0 auto;min-width:100%;width:100%;max-width:100%;scroll-snap-align:start;padding:0 2px;overflow:visible;position:relative}
+.shop-page .item{min-height:67px}
+.shop-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:10px 0}
+.shop-nav{justify-content:center}.shop-nav button{background:#493026;border:1px solid #8b5038;padding:8px 12px}
+.shop-dots{display:flex;gap:6px;justify-content:center;flex:1}
+.shop-dot{width:9px;height:9px;border-radius:50%;background:#777;border:1px solid #999;padding:0;min-width:9px;opacity:.8;transition:background .2s,transform .2s}
+.shop-dot.active{background:#fff;border-color:#fff;box-shadow:0 0 7px #ffffff88;transform:scale(1.18);opacity:1}
+.upgrade-meter{height:7px;background:#403a32;border-radius:20px;overflow:hidden;margin-top:7px;max-width:240px}
+.upgrade-meter>span{display:block;height:100%;background:linear-gradient(90deg,#39bd68,#a4f28b);width:0;transition:width .35s ease}
+
+
+.cart-menu-wrap{position:relative;margin:-3px 0 12px;display:flex;flex-direction:column;align-items:flex-start;gap:7px}.cart-menu-toggle{background:linear-gradient(145deg,#3c302a,#251c19);border:1px solid #8b654c;padding:8px 13px;font-size:13px;box-shadow:0 4px 14px #0005}.cart-menu{display:flex;flex-wrap:wrap;gap:7px;width:100%;padding:9px;background:#211916;border:1px solid var(--line);border-radius:13px}.cart-menu button{flex:1;min-width:90px;background:#30221d;border:1px solid #725044;padding:10px 6px;font-size:12px}.cart-menu button.active{background:#7d2b20;border-color:#ef7650}.cart-menu[hidden]{display:none}
+body.rainbow-buttons button:not(.shop-dot){background-image:none!important;color:var(--text)!important;text-shadow:none!important;border:2px solid transparent!important;background-origin:border-box!important;background-clip:padding-box,border-box!important;background-image:linear-gradient(transparent,transparent),linear-gradient(110deg,#ff4545,#ffb545,#fff04a,#48d66b,#45baff,#a75aff,#ff54b9)!important;background-size:100% 100%,300% 300%!important;animation:rainbowBorder 5s linear infinite!important}
+@keyframes rainbowBorder{0%{background-position:0 0,0% 50%}100%{background-position:0 0,300% 50%}}
+body.pulse-off .tap{animation:none!important;filter:none!important}body.particles-off:before,body.particles-off:after{display:none!important}body.glow-off .panel,body.glow-off button{box-shadow:none!important}body.confetti-off .confetti{display:none!important}
+.beta-notice{margin:0 auto 14px;padding:11px 14px;max-width:520px;text-align:center;border:1px solid #b8794c;border-radius:12px;background:#38271f;color:#ffdb9b;font-size:12px;line-height:1.5}.brand{position:relative;padding-top:14px}.settings-trigger{position:absolute;left:0;top:12px;background:linear-gradient(145deg,#3c302a,#251c19);border:1px solid #8b654c;padding:9px 11px;font-size:17px;box-shadow:0 4px 14px #0005}.settings-trigger:focus-visible,.settings-card button:focus-visible,.settings-card input:focus-visible,.screen-toggle:focus-visible{outline:2px solid #9de5a5;outline-offset:3px}
+.screen-toggle{position:absolute;left:0;top:64px;background:linear-gradient(145deg,#3c302a,#251c19);border:1px solid #8b654c;padding:9px 11px;font-size:17px;box-shadow:0 4px 14px #0005}
+.cart-menu-wrap{display:none!important}
+#hubMenu{display:none;max-width:520px;margin:8px auto 16px;gap:9px;flex-wrap:wrap}
+#hubMenu button{flex:1 1 42%;min-height:64px;background:linear-gradient(145deg,#3c302a,#251c19);border:1px solid #8b654c;font-size:15px}
+#hubMenu button[hidden]{display:none!important}
+body:not(.menu-open) main>.beta-notice,body:not(.menu-open) .brand h1,body:not(.menu-open) .brand p{display:none}
+body:not(.menu-open) #rebirthDock,body:not(.menu-open) #shopDock,body:not(.menu-open) .click-count,body:not(.menu-open) .clicker-panel>.eyebrow,body:not(.menu-open) .clicker-panel>.sub,body:not(.menu-open) .clicker-panel>div[style*="max-width:390px"],body:not(.menu-open) #music,body:not(.menu-open) #purchaseReminder{display:none!important}
+body:not(.menu-open) .clicker-panel{background:transparent;border:0;box-shadow:none;padding:12px 8px}
+body:not(.menu-open) #clickerview{margin-top:9vh}
+body:not(.menu-open) #money{font-size:clamp(38px,11vw,56px);margin:8px 0 18px}
+body.menu-open #clickerview{display:none!important}
+body.menu-open #hubMenu{display:flex}
+body.menu-open #extrasPanel{display:block!important;margin-top:10px}
+#extrasPanel[hidden]{display:none!important}
+#menuDev[hidden]{display:none!important}
+body:after{content:"";position:fixed;inset:-20%;z-index:0;pointer-events:none;opacity:.12;background:conic-gradient(from 0deg at 50% 50%,#ff5b45,#e6a33c,#4ccf9b,#4b91e8,#a56be8,#ff5b45);filter:blur(75px) saturate(1.25);animation:colorDrift 28s linear infinite}
+@keyframes colorDrift{to{transform:rotate(360deg) scale(1.08);filter:blur(75px) hue-rotate(35deg) saturate(1.35)}}
+@keyframes popIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.settings-overlay{position:fixed;inset:0;z-index:1100;background:#080605c9;display:none;align-items:center;justify-content:center;padding:20px}
+.settings-card{width:min(100%,390px);max-height:90dvh;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(145deg,#30231e,#1d1715);border:1px solid #a36a48;border-radius:20px;padding:20px;box-shadow:0 18px 55px #000b;animation:popIn .22s ease-out}
+.settings-card h2{margin:0 0 12px}.settings-card label{display:block;font-size:13px;color:var(--muted);font-weight:700}.settings-card input[type=range]{width:100%;accent-color:#72d58d;margin:14px 0}.settings-card .settings-actions{display:flex;gap:8px;margin-top:16px}.settings-card button{flex:1;background:#493026;border:1px solid #8b5038}.settings-card .settings-close{background:linear-gradient(120deg,#ffd27b,#e89b35);color:#3c210c}.settings-credit{border-top:1px solid var(--line);margin-top:16px;padding-top:12px;color:var(--muted);font-size:12px;line-height:1.55}
+.top-nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:4px 0 12px}
+.top-nav button{padding:10px 5px;font-size:11px;background:#291e1a;border:1px solid var(--line);min-width:0;line-height:1.25}
+.top-nav button.active{background:#7d2b20;border-color:#ef7650;box-shadow:0 4px 15px #ef765033}
+.settings-card .setting-row{margin:12px 0}.settings-card .setting-row input[type=range]{margin:8px 0 2px}.settings-card select{width:100%;margin-top:7px;padding:11px;border-radius:9px;background:#171311;color:var(--text);border:1px solid #795044;font:inherit}
+.settings-card .toggle-row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0}.settings-card input[type=checkbox]{width:20px;height:20px;accent-color:#72d58d}
+body.rainbow-buttons button:not(.shop-dot){border:2px solid transparent}
+@keyframes rainbowButtons{0%{background-position:0% 50%;filter:hue-rotate(0)}100%{background-position:300% 50%;filter:hue-rotate(360deg)}}
+body.effects-off:before,body.effects-off:after{display:none!important}body.effects-off .tap{animation:none!important}body.effects-off .confetti{animation:none!important;display:none!important}
+@media(max-width:390px){.top-nav button{font-size:10px;padding:9px 2px}}
+@media(prefers-reduced-motion:reduce){body:after{animation:none}button,.panel,.statbox,.item{transition:none}body.rainbow-buttons button:not(.shop-dot){animation:none}}
+
+
+.clicker-screen{max-width:520px;margin:0 auto}.clicker-panel{padding:22px 16px 18px;text-align:center}.click-count{display:flex;align-items:center;justify-content:center;gap:12px;margin:8px auto 5px;padding:9px 16px;width:max-content;max-width:100%;border:1px solid var(--line);border-radius:999px;background:#1d1715}.click-count span{font-size:13px;color:var(--muted)}.click-count b{font-size:20px;color:#ffcf83;font-variant-numeric:tabular-nums}.purchase-reminder{margin:15px auto 0;padding:10px 12px;max-width:390px;background:#2c211a;border:1px solid #765039;border-radius:12px;color:#ffdb9b;font-size:12px;line-height:1.45}.starter-tutorial{max-width:470px;margin:12px auto}.tutorial-head{display:flex;justify-content:space-between;align-items:center}.tutorial-head button{padding:5px 9px;background:#382820;border:1px solid var(--line)}.starter-tutorial ol{margin:10px 0 0;padding-left:22px;color:var(--muted);font-size:12px;line-height:1.7}.starter-tutorial[hidden]{display:none}
+.tutorial-overlay{position:fixed;inset:0;z-index:1500;display:flex;align-items:center;justify-content:center;padding:22px;background:#080605d9;backdrop-filter:blur(5px)}.tutorial-overlay[hidden]{display:none}.tutorial-card{width:min(100%,430px);padding:24px 20px;background:linear-gradient(145deg,#38271f,#1d1715);border:1px solid #b8794c;border-radius:22px;box-shadow:0 20px 70px #000c;text-align:center;animation:popIn .25s ease-out}.tutorial-card h2{margin:0 0 12px;font-size:22px}.tutorial-step{color:#ffcf83;font-size:11px;font-weight:900;letter-spacing:1.5px}.tutorial-copy{min-height:88px;color:var(--text);font-size:15px;line-height:1.6;margin:18px 0}.tutorial-actions{display:flex;gap:9px}.tutorial-actions button{flex:1;background:#493026;border:1px solid #8b5038}.tutorial-actions .tutorial-next{background:linear-gradient(120deg,#ffd27b,#e89b35);color:#3c210c}
+.shop-browser{display:flex;align-items:stretch;gap:8px;min-width:0}.shop-browser #items{flex:1;min-width:0}.shop-scrubber{appearance:slider-vertical;writing-mode:vertical-lr;direction:rtl;width:24px;flex:0 0 24px;height:auto;min-height:260px;margin:8px 0;accent-color:var(--gold);touch-action:pan-y;cursor:ns-resize}.shop-scrubber::-webkit-slider-thumb{cursor:grab}.shop-scrubber::-moz-range-thumb{cursor:grab;width:20px;height:20px}.rebirth-count{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;border:1px solid #8d633f;background:#261c17;color:#ffd18a;font-size:12px;font-weight:800}.rebirth-count[hidden]{display:none}.tank-panel{margin-top:14px;border-color:#64745a;background:linear-gradient(145deg,#252b20,#1d211a)}.tank-panel[hidden]{display:none}.tank-tag{font-size:11px;color:#b7d69a}body.shop-inline #shopview{margin-top:12px}
+
+
+/* Temas */
+body{background:radial-gradient(circle at top,var(--theme-glow,#482019),var(--bg) 58%);color:var(--text)}
+.panel{background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--panel) 82%,#000));border-color:var(--line)}
+.tap{background:radial-gradient(circle at 38% 30%,color-mix(in srgb,var(--red) 55%,#fff),var(--red) 48%,color-mix(in srgb,var(--red) 65%,#000));border-color:color-mix(in srgb,var(--red) 55%,#fff)}
+body.theme-ocean{--bg:#101c2b;--panel:#192d43;--line:#315878;--text:#eaf6ff;--muted:#a9c6dc;--red:#238bd0;--gold:#75d5f5;--theme-glow:#16466a}
+body.theme-forest{--bg:#111e16;--panel:#1d3023;--line:#3d6545;--text:#efffee;--muted:#b4cdb5;--red:#39a65b;--gold:#c4df75;--theme-glow:#245333}
+body.theme-purple{--bg:#1b1428;--panel:#2b2040;--line:#594477;--text:#f8efff;--muted:#c6b3d8;--red:#9a62d6;--gold:#e1b4ff;--theme-glow:#482b69}
+body.theme-gold{--bg:#211b10;--panel:#352b19;--line:#70572c;--text:#fff8e8;--muted:#d4c29d;--red:#d69a32;--gold:#ffe08a;--theme-glow:#654719}
+body.theme-pink{--bg:#26151e;--panel:#3a202e;--line:#754258;--text:#fff0f7;--muted:#d9b3c4;--red:#e45b9b;--gold:#ffc1df;--theme-glow:#6b2949}
+#clickerview.dashboard-layout #shopview,#clickerview.dashboard-layout #upview,#clickerview.dashboard-layout #objectivesview{margin-top:12px}
+#clickerview.dashboard-layout #objectivesview[hidden],#clickerview.dashboard-layout #upview[hidden],#clickerview.dashboard-layout #shopview[hidden],#clickerview.dashboard-layout #rebirthDock[hidden],#clickerview.dashboard-layout #extrasPanel[hidden]{display:none!important}
+
+/* V29: layout selecionável, fundo animado temático e modo pixel */
+.brand{min-height:116px;padding-left:54px;text-align:center}
+.settings-trigger{left:0;top:12px;width:48px;height:48px;padding:8px}
+.screen-toggle{left:0;top:66px;width:48px;height:48px;padding:8px}
+body:before{opacity:.20;background-image:repeating-linear-gradient(35deg,transparent 0 13px,color-mix(in srgb,var(--red) 22%,transparent) 13px 15px,transparent 15px 28px),repeating-linear-gradient(125deg,transparent 0 19px,color-mix(in srgb,var(--text) 11%,transparent) 19px 21px,transparent 21px 40px);background-size:220% 220%;transform-origin:center;animation:themeLines 32s linear infinite}
+@keyframes themeLines{0%{transform:rotate(0deg) scale(1.35);background-position:0 0,0 0}100%{transform:rotate(360deg) scale(1.35);background-position:160px 220px,-180px 140px}}
+body:after{opacity:.10;background:repeating-conic-gradient(from 0deg at 50% 50%,color-mix(in srgb,var(--red) 22%,transparent) 0deg 3deg,transparent 3deg 7deg);filter:blur(1px);animation:lineOrbit 48s linear infinite}
+@keyframes lineOrbit{to{transform:rotate(360deg) scale(1.1)}}
+#rebirthToast{position:fixed;z-index:1800;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translate(-50%,-18px);width:min(92vw,440px);padding:12px 16px;text-align:center;border:1px solid var(--gold);border-radius:14px;background:linear-gradient(120deg,var(--panel),color-mix(in srgb,var(--red) 30%,var(--panel)));color:var(--text);font-weight:900;box-shadow:0 10px 35px #0009;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+#rebirthToast.show{opacity:1;transform:translate(-50%,0)}
+body.pixel-mode,body.pixel-mode button,body.pixel-mode input,body.pixel-mode select{font-family:monospace!important;letter-spacing:-.45px}
+body.pixel-mode .tap,body.pixel-mode .panel,body.pixel-mode button{border-radius:3px!important;box-shadow:4px 4px 0 color-mix(in srgb,var(--red) 45%,#000)!important;image-rendering:pixelated}
+body.pixel-mode .tap .pepper{filter:none;image-rendering:pixelated}
+body.pixel-mode:before{background-size:18px 18px;opacity:.27}
+body.layout-old:not(.menu-open) main>.beta-notice,body.layout-old:not(.menu-open) .brand h1,body.layout-old:not(.menu-open) .brand p{display:block}
+body.layout-old:not(.menu-open) #clickerview{margin-top:0}
+body.layout-old:not(.menu-open) .clicker-panel{background:linear-gradient(145deg,var(--panel),color-mix(in srgb,var(--panel) 82%,#000));border:1px solid var(--line);box-shadow:0 7px 20px #0003;padding:22px 16px 18px}
+body.layout-old:not(.menu-open) .click-count,body.layout-old:not(.menu-open) .clicker-panel>.eyebrow,body.layout-old:not(.menu-open) .clicker-panel>.sub,body.layout-old:not(.menu-open) .clicker-panel>div[style*="max-width:390px"],body.layout-old:not(.menu-open) #music,body.layout-old:not(.menu-open) #purchaseReminder{display:block!important}
+body.layout-old:not(.menu-open) .click-count{display:flex!important}
+body.layout-old:not(.menu-open) #rebirthDock{display:block!important}
+
+body.layout-old:not(.menu-open) #extrasPanel{display:block!important;margin-top:12px}
+body.layout-old:not(.menu-open) #shopview,body.layout-old:not(.menu-open) #upview,body.layout-old:not(.menu-open) #objectivesview{display:block!important}
+body.layout-old:not(.menu-open) #shopview[hidden],body.layout-old:not(.menu-open) #upview[hidden],body.layout-old:not(.menu-open) #objectivesview[hidden]{display:block!important}
+body.layout-old:not(.menu-open) #rebirthDock{display:block!important}
+body.layout-old:not(.menu-open) #shopTrack{touch-action:pan-y}
+
+@media(prefers-reduced-motion:reduce){body:before,body:after{animation:none!important}}
+
+
+/* V32 — fundo com faixas verticais alternadas, animadas e ligadas ao tema */
+body{--wall-top:#09263e;--wall-mid:#123e5d;--wall-light:#1d5a7c;--wall-shadow:#071b2d;background:linear-gradient(180deg,var(--wall-top),var(--wall-mid) 55%,var(--wall-shadow))!important;min-height:100vh}
+body:before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:1;background-image:repeating-linear-gradient(90deg,var(--wall-top) 0 12.5%,var(--wall-mid) 12.5% 25%,color-mix(in srgb,var(--wall-light) 35%,var(--wall-mid)) 25% 26.2%,var(--wall-mid) 26.2% 37.5%,var(--wall-shadow) 37.5% 38.7%,var(--wall-top) 38.7% 50%);background-size:200% 100%;background-position:0 0;animation:pepperWallDrift 18s linear infinite;will-change:background-position}
+@keyframes pepperWallDrift{from{background-position:0 0}to{background-position:100% 0}}
+body:after{opacity:.035;filter:blur(88px) saturate(1.1)}
+body.theme-ocean{--wall-top:#061d35;--wall-mid:#10517a;--wall-light:#3288b6;--wall-shadow:#061426}
+body.theme-forest{--wall-top:#0b2419;--wall-mid:#1b5535;--wall-light:#438b58;--wall-shadow:#07170f}
+body.theme-purple{--wall-top:#1a1030;--wall-mid:#442765;--wall-light:#8055a5;--wall-shadow:#10091e}
+body.theme-gold{--wall-top:#2a1b0a;--wall-mid:#65451a;--wall-light:#a77a35;--wall-shadow:#1b1006}
+body.theme-pink{--wall-top:#301326;--wall-mid:#71334f;--wall-light:#b35b83;--wall-shadow:#1b0b16}
+body:not(.menu-open) #clickerview{margin-top:2.5vh!important}
+body:not(.menu-open) .clicker-panel{min-height:calc(82dvh - 20px);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:clamp(8px,2vh,20px) 10px 24px!important;background:transparent!important;border:0!important;box-shadow:none!important}
+body:not(.menu-open) .clicker-panel .eyebrow,body:not(.menu-open) .clicker-panel>.sub,body:not(.menu-open) .clicker-panel>.click-count,body:not(.menu-open) .clicker-panel>div[style*="max-width:390px"]{display:none!important}
+body:not(.menu-open) #money{order:0;width:100%;margin:4px auto clamp(24px,6vh,58px)!important;text-align:center;font-family:Rockwell,"Roboto Slab",Georgia,serif;font-size:clamp(35px,10vw,54px)!important;font-weight:1000;letter-spacing:-1.2px;line-height:1.15;color:#fff7e9;text-shadow:0 3px 0 #152d42,0 6px 16px #0009;overflow-wrap:anywhere}
+body:not(.menu-open) #tap{order:1;width:min(72vw,370px);height:auto;aspect-ratio:1;margin:0 auto;background:radial-gradient(circle at 36% 27%,color-mix(in srgb,var(--red) 50%,#fff),var(--red) 48%,color-mix(in srgb,var(--red) 55%,#000) 100%);border:6px solid color-mix(in srgb,var(--red) 45%,#fff);box-shadow:0 10px 0 color-mix(in srgb,var(--red) 58%,#000),0 18px 34px #0008}
+body:not(.menu-open) #tap .pepper{font-size:clamp(112px,31vw,178px)}
+body:not(.menu-open) #music,body:not(.menu-open) #purchaseReminder{display:none!important}
+body:not(.menu-open) #money{white-space:normal}
+body.pixel-mode:not(.menu-open) #money{font-family:monospace!important;letter-spacing:-1px}
+@media(prefers-reduced-motion:reduce){body:before{animation:none!important}}
+
+
+/* V34 — barras afastadas das bordas, gradiente do tema e telas de menu isoladas */
+#topSettingsStrip{display:none}
+#compactBottomNav{display:none}
+@media(min-width:0px){
+ body:not(.layout-old) #topSettingsStrip{display:flex;position:fixed;z-index:1500;top:calc(env(safe-area-inset-top,0px) + 8px);left:12px;right:12px;height:42px;padding:5px 9px;align-items:center;justify-content:space-between;border-radius:12px;background:linear-gradient(105deg,var(--red),#fff 88%);box-shadow:0 3px 12px #0002}
+ body:not(.layout-old) #topSettingsStrip .settings-trigger{position:static;width:34px;height:32px;padding:3px 7px;border-radius:8px;background:#ffffffb8;color:#252525;border:1px solid #ffffffaa;box-shadow:none;font-size:17px}
+ body:not(.layout-old) #topSettingsStrip .screen-toggle{display:inline-flex!important;position:static;width:34px;height:32px;padding:3px 7px;align-items:center;justify-content:center;border-radius:8px;background:#ffffffb8;color:#252525;border:1px solid #ffffffaa;box-shadow:none;font-size:17px}
+ body:not(.layout-old) .brand{min-height:0;height:0;padding:0;margin:0}
+ body:not(.layout-old) .brand h1,body:not(.layout-old) .brand p,body:not(.layout-old) .screen-toggle{display:none!important}
+ body:not(.layout-old) main{padding-top:calc(env(safe-area-inset-top,0px) + 62px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 18px)}
+ body:not(.layout-old).menu-open #hubMenu{display:none!important}
+ body:not(.layout-old) #clickerview{margin-top:2.5vh!important}
+}
+
+
+/* Cookie Clicker: tema de confeitos caindo */
+body.theme-cookie{--bg:#24152b;--panel:#38213c;--line:#75456f;--text:#fff5ff;--muted:#e0bfdf;--red:#e66ba9;--gold:#ffd36e;--theme-glow:#7b3970;background:linear-gradient(180deg,#4a2450,#25162f 58%,#160f24)!important}
+body.theme-cookie:before,body.theme-cookie-choco:before,body.theme-cookie-ocean:before,body.theme-cookie-mint:before,body.theme-cookie-galaxy:before,body.theme-cookie-sunset:before{opacity:.95;background-image:repeating-linear-gradient(105deg,transparent 0 34px,#ff75a8 35px 38px,transparent 39px 76px),repeating-linear-gradient(28deg,transparent 0 52px,#ffd45e 53px 56px,transparent 57px 104px),repeating-linear-gradient(145deg,transparent 0 71px,#8ee5d0 72px 75px,transparent 76px 142px),repeating-linear-gradient(75deg,transparent 0 91px,#b69aff 92px 95px,transparent 96px 180px);background-size:170px 210px,220px 260px,190px 230px,250px 290px;animation:sprinkleRain 8s linear infinite;transform:none!important}
+body.theme-cookie:after,body.theme-cookie-choco:after,body.theme-cookie-ocean:after,body.theme-cookie-mint:after,body.theme-cookie-galaxy:after,body.theme-cookie-sunset:after{opacity:.18;background:radial-gradient(circle,#fff4bd 0 2px,transparent 3px),radial-gradient(circle,#ff8fbd 0 2px,transparent 3px),radial-gradient(circle,#8ee5d0 0 2px,transparent 3px);background-size:53px 61px,79px 83px,97px 101px;background-position:0 0,23px 17px,44px 31px;filter:none;animation:sprinkleDots 11s linear infinite}
+@keyframes sprinkleRain{from{background-position:0 -220px,40px -260px,90px -230px,120px -290px}to{background-position:0 900px,40px 1040px,90px 920px,120px 1160px}}
+@keyframes sprinkleDots{from{background-position:0 -100px,23px -160px,44px -210px}to{background-position:0 900px,23px 840px,44px 790px}}
+body.theme-cookie .tap{background:radial-gradient(circle at 35% 25%,#fff0bd 0%,#f8a7d0 38%,#d95b9f 75%,#87346e 100%);border-color:#ffe0a8;box-shadow:0 10px 0 #85396e,0 18px 34px #0008}
+body.theme-cookie .tap .pepper{filter:drop-shadow(0 8px 6px #6b2458)}
+.rebirth-shortcut{margin:12px 0;padding:12px;border-color:#b87b37;background:linear-gradient(120deg,#38271a,#241a16)}.rebirth-shortcut button{width:100%;background:linear-gradient(120deg,#ffd27b,#e89b35);color:#3c210c}
+@media(prefers-reduced-motion:reduce){body.theme-cookie:before,body.theme-cookie:after,body.theme-cookie-choco:after,body.theme-cookie-ocean:after,body.theme-cookie-mint:after,body.theme-cookie-galaxy:after,body.theme-cookie-sunset:after{animation:none!important}}
+
+/* Paletas independentes do universo cookie */
+body.theme-cookie-choco{--bg:#21140f;--panel:#38251d;--line:#80543d;--text:#fff2df;--muted:#d9b99e;--red:#a85b36;--gold:#f4c477;--theme-glow:#6a3825;background:linear-gradient(180deg,#61351f,#24170f 62%,#120d0a)!important}
+body.theme-cookie-ocean{--bg:#101d35;--panel:#1b3151;--line:#416b9a;--text:#eff7ff;--muted:#b5d3ef;--red:#5c9ee8;--gold:#a8e8ff;--theme-glow:#245d91;background:linear-gradient(180deg,#1c5784,#14243e 62%,#0b1425)!important}
+body.theme-cookie-mint{--bg:#10251f;--panel:#1d3b31;--line:#477c68;--text:#effff7;--muted:#b8deca;--red:#54b98b;--gold:#d2f28d;--theme-glow:#286a50;background:linear-gradient(180deg,#286b52,#183629 62%,#0d1b16)!important}
+body.theme-cookie-galaxy{--bg:#19132f;--panel:#2a2050;--line:#6755a0;--text:#f5f0ff;--muted:#c8b9ef;--red:#956be8;--gold:#f5b6f2;--theme-glow:#523b91;background:linear-gradient(180deg,#563b83,#241b43 62%,#100d20)!important}
+body.theme-cookie-sunset{--bg:#321b20;--panel:#4b282c;--line:#9b5750;--text:#fff3e8;--muted:#f0c3ad;--red:#ef805e;--gold:#ffd07b;--theme-glow:#a84943;background:linear-gradient(180deg,#a84c46,#49272b 62%,#1e1319)!important}
+body[class*="theme-cookie"] .tap{background:radial-gradient(circle at 35% 25%,#fff0bd 0%,color-mix(in srgb,var(--red) 65%,#fff) 38%,var(--red) 75%,color-mix(in srgb,var(--red) 45%,#000) 100%);border-color:color-mix(in srgb,var(--gold) 75%,#fff);box-shadow:0 10px 0 color-mix(in srgb,var(--red) 60%,#000),0 18px 34px #0008}
+
+
+/* Navegação rápida e layouts personalizados */
+#cartLauncher{display:none;position:fixed;z-index:1502;top:calc(env(safe-area-inset-top,0px) + 58px);right:12px;width:42px;height:42px;padding:0;border-radius:12px;background:linear-gradient(145deg,var(--red),var(--panel));border:1px solid var(--gold);box-shadow:0 4px 14px #0005;font-size:21px}
+#cartQuickMenu{position:fixed;z-index:1503;top:calc(env(safe-area-inset-top,0px) + 106px);right:12px;left:auto;width:min(220px,calc(100vw - 24px));padding:8px;display:grid;gap:6px;border:1px solid var(--gold);border-radius:14px;background:var(--panel);box-shadow:0 12px 32px #0009}
+#cartQuickMenu[hidden]{display:none!important}#cartQuickMenu button{text-align:left;background:color-mix(in srgb,var(--red) 24%,var(--panel));border:1px solid var(--line)}
+@media(min-width:0px){body:not(.layout-old) #cartLauncher{display:block}}
+body.layout-old #cartLauncher{display:block;top:68px;right:12px}
+body:not(.layout-old) main{padding-top:calc(env(safe-area-inset-top,0px) + 112px)!important}
+body.home-dashboard #extrasPanel{display:block!important;margin-top:12px}
+body.home-dashboard #clickerview{margin-top:0!important}
+body.home-dashboard #extrasPanel #objectivesview[hidden],body.home-dashboard #extrasPanel #shopview[hidden],body.home-dashboard #extrasPanel #upview[hidden]{display:none!important}
+body.home-dashboard #extrasPanel #objectivesview,body.home-dashboard #extrasPanel #shopview,body.home-dashboard #extrasPanel #upview{margin-top:10px}
+body.home-dashboard #rebirthDock{display:none!important}
+
+
+/* Gotas de chocolate caindo no fundo do universo cookie */
+#chocoRain{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+#chocoRain span{position:absolute;top:-12vh;width:13px;height:22px;border-radius:55% 55% 60% 60%;background:linear-gradient(110deg,#9b5a36,#4b2418 55%,#2a120d);box-shadow:inset 2px 1px 2px #d08a5b66,0 2px 5px #0005;animation:chocoFall linear infinite}
+#chocoRain span:nth-child(1){left:5%;animation-duration:8s;animation-delay:-3s}
+#chocoRain span:nth-child(2){left:17%;animation-duration:11s;animation-delay:-8s;transform:scale(.7)}
+#chocoRain span:nth-child(3){left:29%;animation-duration:9s;animation-delay:-5s;transform:scale(1.2)}
+#chocoRain span:nth-child(4){left:42%;animation-duration:12s;animation-delay:-2s;transform:scale(.8)}
+#chocoRain span:nth-child(5){left:55%;animation-duration:8.5s;animation-delay:-6s}
+#chocoRain span:nth-child(6){left:68%;animation-duration:10.5s;animation-delay:-4s;transform:scale(.65)}
+#chocoRain span:nth-child(7){left:81%;animation-duration:9.5s;animation-delay:-7s;transform:scale(1.1)}
+#chocoRain span:nth-child(8){left:94%;animation-duration:12.5s;animation-delay:-1s;transform:scale(.75)}
+@keyframes chocoFall{from{translate:0 -12vh;rotate:0deg}to{translate:35px 115vh;rotate:280deg}}
+body:not([class*="theme-cookie"]) #chocoRain{display:none}
+body.home-show-rebirth #rebirthDock{display:block!important}
+
+#persistentGameName{position:fixed;z-index:1504;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;transform:translateX(-50%);max-width:min(58vw,340px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:8px 13px;border:1px solid var(--gold);border-radius:999px;background:linear-gradient(135deg,color-mix(in srgb,var(--panel) 94%,#fff),var(--panel));color:var(--text);font-size:12px;font-weight:900;letter-spacing:.3px;box-shadow:0 5px 18px #0006;pointer-events:none}
+body.layout-old #persistentGameName{top:14px}
+body.detailed-mode .panel,body.detailed-mode .statbox{border-width:1px;box-shadow:0 10px 28px #0005,inset 0 1px #ffffff18;background-image:linear-gradient(145deg,#ffffff0c,transparent 55%)}
+body.detailed-mode .clicker-panel{outline:1px solid color-mix(in srgb,var(--gold) 35%,transparent);outline-offset:3px}
+body.detailed-mode .item{padding:14px 10px;margin:5px 0;border:1px solid color-mix(in srgb,var(--line) 75%,transparent);border-radius:12px;background:linear-gradient(110deg,#ffffff0b,transparent)}
+body.detailed-mode .item strong{font-size:14px;letter-spacing:.15px}
+body.detailed-mode .number{text-shadow:0 0 18px color-mix(in srgb,var(--gold) 35%,transparent)}
+body.detailed-mode .tap{box-shadow:0 10px 0 color-mix(in srgb,var(--red) 65%,#000),0 0 0 7px color-mix(in srgb,var(--gold) 13%,transparent),0 18px 34px #0009}
+
+
+/* V42 — interface de loja inspirada em Cookie Clicker */
+:root{--wood:#70401f;--wood2:#3a2117;--stone:#302a28;--cookie-gold:#f4b64e}
+body{background:radial-gradient(ellipse at 50% 0%,#59402e 0,#241a16 55%,#120e0c 100%)}
+#extrasPanel{padding:10px!important;background-color:#373331!important;background-image:radial-gradient(ellipse at 18% 22%,#77716b55 0 2%,transparent 22%),radial-gradient(ellipse at 78% 68%,#15131288 0 3%,transparent 28%),radial-gradient(ellipse at 48% 42%,#aaa19a22 0 1.5%,transparent 18%),repeating-linear-gradient(174deg,#ffffff08 0 2px,transparent 2px 17px),linear-gradient(145deg,#514b47,#302b29 48%,#211e1d)!important;border:2px solid #8b776b!important;border-radius:14px!important;box-shadow:inset 0 0 28px #0009,0 5px 18px #0007!important}
+#shopview>strong,#upview>strong{display:block;font-family:Georgia,serif;font-size:19px;color:#ffe2b4;text-shadow:0 2px #24140d}
+#shopview>p:first-of-type{display:none}
+.shop-track{height:min(55vh,570px);min-height:260px;background:linear-gradient(180deg,#3c3532,#292321);border:2px solid #76513f;border-radius:12px;padding:4px 8px;box-shadow:inset 0 0 22px #0008}
+.shop-page .item{min-height:78px;padding:10px 5px;border-bottom:2px solid #76594d;gap:7px}
+.shop-page .item strong{font-family:Georgia,serif;font-size:16px;color:#fff0d7;text-shadow:0 2px #21130d}
+.shop-page .item small{font-size:12px;color:#e2cbb5}
+.shop-page .item small:last-child{color:#ffc45d;font-weight:900}
+.shop-page .buy{min-width:94px;background:linear-gradient(180deg,#a96832,#63351e);border:2px solid #d69a59;border-radius:9px;color:#fff1d8;box-shadow:0 3px 0 #32180d;font-family:Georgia,serif}
+#shopControls{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:6px;margin:9px 0;padding:8px;background:linear-gradient(135deg,#684027,#321e15);border:2px solid #a6754a;border-radius:12px}
+#shopControls button{padding:9px 4px;background:linear-gradient(#51382a,#2c1d17);border:1px solid #a77a56;font-size:12px}
+#shopControls button.active{background:linear-gradient(#d58a37,#8b4d20);color:#fff2d2;border-color:#ffd080}
+#shopControls .qty-group{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
+#shopControls .mode-group{display:grid;grid-template-columns:1fr;gap:4px}
+#shopControls .section-group{display:grid;grid-template-columns:1fr;gap:4px}
+#cookieBottomNav{position:sticky;bottom:0;z-index:1200;display:grid;grid-template-columns:repeat(5,1fr);gap:5px;margin:10px -4px -18px;padding:8px 5px calc(8px + env(safe-area-inset-bottom,0px));background:linear-gradient(180deg,#69452e,#2a1b14);border:2px solid #a57950;border-bottom:0;border-radius:14px 14px 0 0;box-shadow:0 -5px 18px #0008}
+#cookieBottomNav button{padding:7px 2px;min-width:0;background:linear-gradient(180deg,#563a2a,#2a1c16);border:1px solid #98704e;border-radius:9px;font-family:Georgia,serif;font-size:11px;display:flex;flex-direction:column;align-items:center;gap:3px}
+#cookieBottomNav button .navIcon{font-size:22px;line-height:1.1}
+#cookieBottomNav button.active{background:linear-gradient(180deg,#bd7a36,#63361d);border:2px solid #ffd078;box-shadow:0 0 12px #ffc15a88;color:#fff3d5}
+#shopview .shop-nav,#shopPageLabel{display:none!important}
+#cartLauncher{display:none!important}
+@media(max-width:420px){#shopControls{grid-template-columns:1fr 1fr 1.25fr}#shopControls button{font-size:11px}#cookieBottomNav button{font-size:10px}}
+body.menu-open #cookieBottomNav{display:grid}
+/* V43 — abas com textura de pedra, controles apenas na Loja e topo limpo */
+#topSettingsStrip{display:none!important}
+@media(min-width:0px){body:not(.layout-old) main{padding-top:calc(env(safe-area-inset-top,0px) + 10px)!important}}
+#shopControls[hidden]{display:none!important}
+body.menu-open #extrasPanel{background-color:#373331!important;background-image:radial-gradient(ellipse at 18% 22%,#77716b55 0 2%,transparent 22%),radial-gradient(ellipse at 78% 68%,#15131288 0 3%,transparent 28%),radial-gradient(ellipse at 48% 42%,#aaa19a22 0 1.5%,transparent 18%),repeating-linear-gradient(174deg,#ffffff08 0 2px,transparent 2px 17px),linear-gradient(145deg,#514b47,#302b29 48%,#211e1d)!important;border-color:#8b776b!important}
+body.menu-open #extrasPanel .panel{background-color:#3b3633}
+
+
+
+/* V44 — rolagem contínua estável + profundidade visual */
+.shop-track{
+  scroll-snap-type:none!important;
+  scroll-behavior:auto!important;
+  overscroll-behavior-y:contain!important;
+  touch-action:pan-y!important;
+  -webkit-overflow-scrolling:touch;
+  background-image:linear-gradient(180deg,#24201fe8,#171514e8),url("./stone_texture.webp")!important;
+  background-size:auto,420px auto!important;
+  background-repeat:repeat!important;
+  box-shadow:inset 0 5px 18px #000b,inset 0 -3px 12px #0008,0 5px 12px #0008!important;
+}
+.shop-browser{display:block!important;min-width:0!important;}
+#shopScrubber{display:none!important;pointer-events:none!important;}
+.shop-page{scroll-snap-align:none!important;}
+#extrasPanel,body.menu-open #extrasPanel{
+  background-color:#292624!important;
+  background-image:linear-gradient(145deg,#4b4541d9,#211f1ee8),url("./stone_texture.webp")!important;
+  background-size:auto,420px auto!important;
+  background-repeat:repeat!important;
+  border:2px solid #817064!important;
+  box-shadow:inset 0 2px 8px #ffffff18,inset 0 -12px 24px #0009,0 8px 22px #0009!important;
+}
+#extrasPanel .panel{
+  background:linear-gradient(145deg,#49413bdc,#211e1ceF),url("./stone_texture.webp")!important;
+  background-size:auto,360px auto!important;
+  border-color:#817064!important;
+  box-shadow:inset 0 1px 0 #ffffff20,0 5px 12px #0009!important;
+}
+button:not(:disabled){
+  position:relative;
+  border:1px solid color-mix(in srgb,var(--gold) 42%,#5a3926);
+  box-shadow:0 4px 0 #160e0b,0 7px 13px #0008,inset 0 1px 0 #ffffff35;
+  text-shadow:0 1px 2px #160e0bcc;
+  transition:transform .12s ease,box-shadow .12s ease,filter .12s ease;
+}
+button:not(:disabled):active{
+  transform:translateY(3px) scale(.985)!important;
+  box-shadow:0 1px 0 #160e0b,0 3px 6px #0008,inset 0 2px 5px #0005!important;
+  filter:brightness(.96);
+}
+#shopControls button,#cookieBottomNav button,.shop-page .buy{
+  box-shadow:0 5px 0 #1b100b,0 8px 14px #0009,inset 0 1px 0 #ffffff38!important;
+}
+#shopControls button.active,#cookieBottomNav button.active{
+  box-shadow:0 5px 0 #43210e,0 0 15px #ffc15a66,inset 0 1px 0 #ffffff55!important;
+}
+@media(prefers-reduced-motion:reduce){button:not(:disabled){transition:none!important}}
+
+
+/* V46 — scroll sem saltos e faixa Construções/Melhorias persistente */
+#shopview #items{overflow-anchor:none;scroll-behavior:auto!important;overscroll-behavior:contain;}
+#shopview .shop-page{overflow-anchor:none;}
+#extrasPanel{overscroll-behavior:contain;}
+#upview{min-height:0;max-height:100%;overflow-y:auto;overscroll-behavior:contain;}
+#shopControls{display:grid!important;}
+#shopControls[hidden]{display:none!important;}
+/* V45 — viewport travado; somente a lista de itens da Loja rola */
+html,body{height:100%;min-height:100%;overflow:hidden!important}
+body{overscroll-behavior:none}
+main{height:100dvh;max-height:100dvh;min-height:0;overflow:hidden;display:flex;flex-direction:column;padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px)!important}
+#clickerview{flex:1;min-height:0;overflow:hidden}
+#extrasPanel{flex:1 1 auto;min-height:0;overflow:hidden!important;display:flex;flex-direction:column}
+#extrasPanel>[hidden],#shopview[hidden],#upview[hidden],#objectivesview[hidden],#rebirthDock[hidden]{display:none!important}
+#shopview:not([hidden]){display:flex!important;flex:1 1 auto;min-height:0;flex-direction:column;overflow:hidden!important}
+#shopview>strong,#shopview>p:first-of-type{flex:0 0 auto}
+#shopview .shop-browser{display:flex!important;flex:1 1 auto;min-height:0;height:auto!important;overflow:hidden!important}
+#shopview #items.shop-track{height:auto!important;min-height:0!important;max-height:none!important;flex:1 1 auto;overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior-y:contain!important;touch-action:pan-y!important;scrollbar-width:thin!important}
+#shopview #items.shop-track::-webkit-scrollbar{display:block!important;width:7px}
+#shopview #items.shop-track::-webkit-scrollbar-thumb{background:var(--gold);border-radius:8px}
+#shopScrubber{display:none!important}
+#shopPageLabel{display:none!important}
+#shopControls{flex:0 0 auto;margin-top:7px}
+#cookieBottomNav{position:relative!important;bottom:auto!important;flex:0 0 auto;margin-top:7px;margin-bottom:0!important}
+body.menu-open{overflow:hidden!important}
+body.menu-open main{padding-top:calc(env(safe-area-inset-top,0px) + 8px)!important}
+body.menu-open #hubMenu{display:none!important}
+body.menu-open #extrasPanel{display:flex!important}
+body.menu-open #extrasPanel #objectivesview:not([hidden]),
+body.menu-open #extrasPanel #upview:not([hidden]){flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+body.menu-open #extrasPanel #objectivesview::-webkit-scrollbar,
+body.menu-open #extrasPanel #upview::-webkit-scrollbar{display:none}
+#clickerview .clicker-panel,#extrasPanel{outline:0!important}
+#clickerview .clicker-panel{border:0!important}
+#extrasPanel{border-color:transparent!important}
+
+</style>
+</head>
+<body>
+<div id="chocoRain" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+<div id="rebirthToast" role="status" aria-live="polite">✨ Você está pronto para fazer Rebirth!</div>
+<main>
+ <div class="beta-notice" role="note">🧪 <strong>JOGO EM BETA</strong> — bugs e instabilidades podem ser esperados. Obrigado por testar!</div>
+ <header class="brand"><h1>🍪 ULTIMATE CLICKER</h1><p>Um toque de cada vez… até dominar o universo!</p></header>
+ <nav id="hubMenu" aria-label="Menu do jogo"><button id="menuShop" type="button">🛒 Loja</button><button id="menuUp" type="button">⚙️ Upgrades</button><button id="menuObjectives" type="button">🎯 Objetivos</button><button id="menuRebirth" type="button">🔄 Rebirth</button><button id="menuDev" type="button" hidden>🧪 Painel de desenvolvedor</button></nav>
+ <div class="cart-menu-wrap">
+  <button id="cartMenuToggle" class="cart-menu-toggle" type="button" aria-expanded="false" aria-controls="cartMenu">🛒 Abrir menu</button>
+  <nav id="cartMenu" class="cart-menu" aria-label="Menu principal" hidden>
+   <button id="tabclicker" type="button">🍪 cookie</button>
+   <button id="tabshop" class="active" type="button">🛒 Loja</button>
+   <button id="tabup" type="button">⚙️ Upgrades</button>
+   <button id="tabobjectives" type="button">🎯 Objetivos</button>
+  </nav>
+ </div>
+ <div id="clickerview" class="clicker-screen">
+ <section class="panel balance clicker-panel">
+  <div id="rebirthTop" class="rebirth-count" hidden>🔄 Rebirths: <b id="rebCountTop">0</b></div><div class="eyebrow" style="margin-top:7px">SUA cookieERIA</div>
+  <div id="money" class="number">0 🍪</div>
+  <div class="sub">Por toque: <b id="gain">+1 🍪</b></div>
+  <button id="tap" class="tap" aria-label="Toque no cookie para produzir cookies" title="Toque no cookie"><span class="pepper">🍪</span><span id="cursorSwarm" class="cursor-swarm" aria-hidden="true"></span><span class="hands" id="hands"><span>👆</span><span>👆</span></span></button>
+  <div class="click-count"><span>👆 Cliques dados</span><b id="clicksCount">0</b></div><div class="panel" style="margin:10px auto;padding:10px;max-width:390px;text-align:left"><strong>📊 Estatísticas desta partida</strong><div style="display:flex;justify-content:space-between;margin-top:6px"><span>⏱️ Tempo jogado</span><b id="playedTime">0s</b></div><div style="display:flex;justify-content:space-between;margin-top:4px"><span>👆 Cliques acumulados</span><b id="clicksTotalStat">0</b></div></div>
+  <div class="sub">Autoprodução: <b id="cps">0</b> cookies por segundo</div>
+  <button id="music">🎵 Música: ligada</button>
+  <div id="purchaseReminder" class="purchase-reminder" aria-live="polite">🌱 Continue clicando para começar sua produção!</div>
+ </section>
+ <div id="rebirthDock"><section class="panel rebirth-sticky"><div style="display:flex;justify-content:space-between;gap:8px"><strong>🔄 RENASCIMENTO DO cookie</strong><span class="rebirth-count" id="rebCountShop">🔄 Rebirths: 0</span><span id="rebstate" class="muted">Bloqueado</span></div><p id="goal" class="sub">Meta: 10.000 🍪</p><div class="bar"><div id="bar"></div></div><button id="rebbtn" class="gold" disabled>FAZER REBIRTH</button><p class="muted" style="text-align:center;margin-bottom:0">Cada Rebirth dobra permanentemente toda a produção (toque e automática). Itens reiniciam; upgrades ficam.</p></section></div><div id="shopDock"></div>
+ </div>
+ <section class="panel">
+  <div id="objectivesview">
+   <div style="display:flex;justify-content:space-between;gap:8px"><strong>🎯 OBJETIVOS & MODO DESENVOLVEDOR</strong><b id="objectiveCount">0/8</b></div>
+   <p class="muted">Complete os 8 objetivos para liberar o Painel de Desenvolvedor. Quando desbloqueado, você poderá encontrá-lo aqui, na aba Objetivos. O progresso é atualizado automaticamente.</p>
+   <div class="bar"><div id="objectiveBar"></div></div>
+   <div id="objectives"></div>
+   <section id="devPanel" hidden style="border-top:1px solid var(--line);margin-top:14px;padding-top:14px">
+  <strong>🧪 PAINEL DE DESENVOLVEDOR</strong>
+  <p class="muted">Modo especial liberado! Ajuste as regras da sua partida. As mudanças ficam salvas neste dispositivo. O valor de cookies por clique é exato; preços personalizados ficam fixos até você alterá-los.</p>
+  <div class="devgrid"><label>💰 Modificar saldo de cookies<input id="devBalance" type="text" inputmode="numeric" placeholder="Digite o novo saldo"></label><button id="devBalanceApply" type="button">Definir saldo</button></div>
+  <div class="devgrid">
+   <label>🍪 cookies por clique (0 = normal)<input id="devClick" type="number" min="0"  step="1"></label>
+   <label>🛒 Multiplicador de preços da loja<input id="devShop" type="number" min="0.1" max="100" step="0.1"></label>
+   <label>⚙️ Multiplicador de preços dos upgrades<input id="devUp" type="number" min="0.1" max="100" step="0.1"></label>
+   <label>✨ Multiplicador dos efeitos dos itens comprados<input id="devItemMult" type="number" min="1" max="1000000" step="1" value="1"></label>
+  </div>
+  <strong style="display:block;margin:14px 0 6px">🏷️ Preço de cada item da loja</strong><p class="muted">Digite o preço desejado para cada item. Deixe em branco para usar o preço progressivo padrão.</p><div id="devPrices" class="devprices"></div>
+   <div class="actions"><button id="devApply">Aplicar mudanças</button><button id="devDefault">Restaurar padrão</button></div>
+   </section>
+  </div>
+  <div id="shopHome"></div><div id="shopview" hidden><strong>🛒 cookieOPOLIS — LOJA DE 30 ITENS</strong><p class="muted">A loja começa aberta com 2 itens revelados. Acumule cookies no total para revelar os próximos 28; os itens aparecem como ??? até cumprir o requisito. Compre vários níveis: o preço cresce a cada compra.</p><div class="shop-nav"><div id="shopDots" class="shop-dots" aria-label="Páginas da loja"></div></div><div class="shop-browser"><input id="shopScrubber" class="shop-scrubber" type="range" min="0" max="1000" step="1" value="0" aria-label="Arraste para rolar os itens da loja para cima e para baixo" title="Arraste para cima ou para baixo para percorrer a loja"><div id="items" class="shop-track" aria-label="Itens da loja; deslize para cima e para baixo"></div></div><p class="muted" id="shopPageLabel" style="text-align:center">Página 1 de 5 · Deslize para cima ou para baixo</p></div>
+  <div id="upview" hidden><strong>⚙️ OFICINA DE UPGRADES</strong><p class="muted">Máquinas automáticas e melhorias para acelerar sua produção.</p><section class="panel rebirth-shortcut"><strong>🔄 Rebirth fica aqui também!</strong><p class="muted">Quando quiser renascer, abra esta opção ou use o botão Rebirth no menu principal.</p><button id="upgradesRebirthButton" type="button">🔄 Abrir Rebirth</button></section><div id="upgrades"></div><section id="tankPanel" class="panel tank-panel" hidden><strong>🛡️ SILO DE GRANULADOS</strong><p class="tank-tag">Modo opcional ativado nas Configurações · O tanque voltou!</p><div id="tankUpgrades"></div></section></div>
+ </section>
+ <section id="shopControls" aria-label="Controles da loja" hidden>
+  <div class="section-group"><button id="buildingsTab" class="active" type="button">▦ Construções</button><button id="upgradesTab" type="button">⚙ Melhorias</button></div>
+  <div class="mode-group"><button id="buyMode" class="active" type="button">Comprando</button><button id="sellMode" type="button">Vendendo</button></div>
+  <div class="qty-group"><button data-qty="1" class="active" type="button">1</button><button data-qty="10" type="button">10</button><button data-qty="100" type="button">100</button><button data-qty="max" type="button">Máx.</button></div>
+ </section>
+ <nav id="cookieBottomNav" aria-label="Navegação principal">
+  <button data-screen="cookie" type="button"><span class="navIcon">🍪</span>Cookie</button>
+  <button data-screen="shop" class="active" type="button"><span class="navIcon">🏪</span>Loja</button>
+  <button data-screen="special" type="button"><span class="navIcon">⭐</span>Especial</button>
+  <button data-screen="stats" type="button"><span class="navIcon">📊</span>Estatísticas</button>
+  <button data-screen="misc" type="button"><span class="navIcon">•••</span>Misc</button>
+ </nav>
+</main>
+<div id="topSettingsStrip" aria-label="Barra superior"><div id="persistentGameName" aria-live="polite">🎮 Minha partida</div><button id="screenToggle" class="screen-toggle" type="button" aria-label="Abrir menu" title="Abrir menu">📘</button><button id="settingsOpen" class="settings-trigger" type="button" aria-label="Abrir configurações" title="Configurações">⚙️</button></div>
+<button id="cartLauncher" type="button" aria-label="Abrir menu de navegação" aria-expanded="false">🛒</button>
+<nav id="cartQuickMenu" aria-label="Navegação rápida" hidden><button data-dest="shop">🛒 Loja</button><button data-dest="up">⬆️ Upgrade</button><button data-dest="objectives">🎯 Objetivos</button><button data-dest="clicker">🍪 cookie</button></nav>
+<div id="nameOverlay" class="settings-overlay" style="z-index:1700" role="dialog" aria-modal="true" aria-labelledby="nameTitle"><section class="settings-card"><h2 id="nameTitle">🍪 Dê um nome à sua partida</h2><p class="muted">Esse nome ficará salvo até você apagar o progresso e criar uma nova partida.</p><input id="gameNameInput" maxlength="24" placeholder="Nome da partida" style="width:100%;padding:12px;border-radius:10px;background:#171311;color:var(--text);border:1px solid #795044;font:inherit"><div class="settings-actions"><button id="confirmGameName" class="settings-close" type="button">Começar a jogar</button></div></section></div>
+<div id="settingsOverlay" class="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+ <section class="settings-card">
+  <h2 id="settingsTitle">⚙️ Configurações</h2>
+  <p class="beta-notice" role="note">🧪 <strong>JOGO EM BETA</strong> — bugs e instabilidades podem ser esperados. Obrigado por testar!</p>
+  <strong>🖥️ Layout do jogo</strong>
+  <p class="muted" style="padding:10px;border:1px solid #b8794c;border-radius:10px;background:#38271f;color:#ffcf9b">⚠️ Aviso: o layout antigo está bugado. Se você entrar nele, poderá não conseguir voltar para o layout novo.</p><div class="setting-row"><label for="layoutMode">Estilo visual</label><select id="layoutMode"><option value="new">Novo — minimalista</option><option value="old">Antigo — completo</option></select></div><div class="setting-row"><label for="detailMode">✨ Detalhamento da interface</label><select id="detailMode"><option value="normal">Normal — interface atual</option><option value="detailed">Detalhada — mais informações e acabamento</option></select></div><div class="setting-row"><label for="homeLayout">🏠 Conteúdo da tela inicial</label><select id="homeLayout"><option value="menu">Só clicker + menu do carrinho</option><option value="shop">Loja + clicker</option><option value="up">Upgrades + clicker</option><option value="objectives">Objetivos + clicker</option><option value="all">Tudo junto + clicker</option></select></div>
+  <label class="toggle-row" for="pixelToggle"><span>🟪 Visual pixelado</span><input id="pixelToggle" type="checkbox"></label><div class="setting-row"><label for="gameModeSelect">🍪🌶️ Universo do jogo</label><select id="gameModeSelect"><option value="cookie">🍪 Cookie Clicker</option><option value="pepper">🌶️ Pimenta Clássica</option></select></div><div class="setting-row" id="cookiePaletteRow"><label for="themeSelect">🎨 Tema visual</label><select id="themeSelect"><option value="cookie">🍓 Morango & Granulado / Pimenta Clássica</option><option value="cookie-choco">🍫 Chocolate / Pimenta Vulcânica</option><option value="cookie-ocean">🫐 Blueberry / Pimenta Oceânica</option><option value="cookie-mint">🌿 Menta / Pimenta Floresta</option><option value="cookie-galaxy">🌌 Galáxia / Pimenta Cósmica</option><option value="cookie-sunset">🌅 Pôr do Sol / Pimenta Dourada</option></select></div>
+  <div class="setting-row"><label for="rebirthPlacement">🔄 Rebirth na tela inicial</label><select id="rebirthPlacement"><option value="show">Mostrar somente a aba Rebirth</option><option value="hide">Não mostrar Rebirth na tela inicial</option></select></div>
+  <div id="secretDevSetting" class="setting-row" hidden><label class="toggle-row" for="secretDevToggle"><span>🧪 Painel de desenvolvedor</span><input id="secretDevToggle" type="checkbox"></label><p class="muted">Ative ou desative o painel nesta sessão. Ele volta a ficar oculto ao reiniciar o jogo.</p></div>
+  <label class="toggle-row" for="offlineFarmToggle"><span>🌙 Ativar Farm Offline</span><input id="offlineFarmToggle" type="checkbox"></label>
+  <p class="muted">Gere cookies enquanto o jogo estiver fechado. A produção usa sua autoprodução atual e acumula por até 24 horas.</p>
+  <label class="toggle-row" for="tankToggle"><span>🛡️ Ativar Silo de Granulados (opcional)</span><input id="tankToggle" type="checkbox"></label>
+  <p class="muted">Ao ativar, o silo aparece na Oficina com três upgrades exclusivos. Desativar esconde o tanque sem apagar seus níveis.</p>
+  <div class="setting-row"><label for="musicVolume">🎵 Volume da música: <b id="musicVolumeValue">65%</b></label><input id="musicVolume" type="range" min="0" max="100" step="1" value="65"></div>
+  <div class="setting-row"><label for="sfxVolume">🔊 Volume dos efeitos sonoros: <b id="sfxVolumeValue">75%</b></label><input id="sfxVolume" type="range" min="0" max="100" step="1" value="75"></div>
+  <div class="setting-row"><label for="musicSelect">🎧 Música do jogo</label><select id="musicSelect"><option value="0">Neon Pepper — Arcade eletrônico</option><option value="1">Turbo Jalapeño — Electro acelerado</option><option value="2">Cosmic Harvest — Synthwave espacial</option><option value="3">Pixel Rush — Chiptune 8-bit</option><option value="4">Midnight Lo-Fi — Chill beat</option></select></div>
+  <label class="toggle-row" for="effectsToggle"><span>✨ Ativar efeitos visuais</span><input id="effectsToggle" type="checkbox" checked></label>
+  <label class="toggle-row" for="rainbowToggle"><span>🌈 Bordas arco-íris nos botões</span><input id="rainbowToggle" type="checkbox"></label>
+  <label class="toggle-row" for="pulseToggle"><span>💓 Brilho pulsante do cookie</span><input id="pulseToggle" type="checkbox" checked></label>
+  <label class="toggle-row" for="particlesToggle"><span>✨ Fundo com partículas</span><input id="particlesToggle" type="checkbox" checked></label>
+  <label class="toggle-row" for="glowToggle"><span>💡 Brilho nos painéis e botões</span><input id="glowToggle" type="checkbox" checked></label>
+  <label class="toggle-row" for="confettiToggle"><span>🎉 Confetes ao fazer Rebirth</span><input id="confettiToggle" type="checkbox" checked></label>
+  <div class="settings-credit"><b>Créditos</b><br>Desenvolvimento do jogo: Matheus Leão de Macedo e Goat GPT.<br>Trilha e efeitos sonoros: áudio procedural original gerado pelo jogo.<br><br>🏅 Menção honrosa: ao Silo de Granulados, antigo rival que marcou as primeiras versões do jogo. Aposentado, mas jamais esquecido.</div>
+  <div class="actions"><button id="save">💾 Salvar agora</button><button id="reset">🗑️ Reiniciar jogo</button></div><div id="note" class="note">Progresso salvo automaticamente neste dispositivo.</div><div class="settings-actions"><button id="settingsClose" class="settings-close" type="button">Fechar</button></div>
+ </section>
+</div>
+<div id="offlineRewardOverlay" class="tutorial-overlay" style="z-index:1600" role="dialog" aria-modal="true" aria-labelledby="offlineRewardTitle" hidden>
+ <section class="tutorial-card">
+  <div class="tutorial-step">🌙 FARM OFFLINE</div><h2 id="offlineRewardTitle">Bem-vindo de volta!</h2>
+  <p id="offlineRewardText" class="tutorial-copy">Enquanto você esteve fora, sua produção continuou crescendo.</p>
+  <div style="margin:12px 0;padding:16px;border:1px solid #b8794c;border-radius:14px;background:#241a16">
+   <div style="font-size:12px;color:#d9b3a0">VOCÊ GANHOU</div>
+   <div id="offlineRewardAmount" style="font-size:clamp(24px,8vw,36px);font-weight:900;color:#ffcf83;margin-top:5px">+0 🍪</div>
+  </div>
+  <button id="offlineRewardClaim" class="tutorial-next" type="button" style="width:100%">RECOLHER RECOMPENSA</button>
+ </section>
+</div>
+<div id="tutorialOverlay" class="tutorial-overlay" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle" hidden>
+ <section class="tutorial-card"><div id="tutorialStep" class="tutorial-step">PASSO 1 DE 5</div><h2 id="tutorialTitle">Bem-vindo!</h2><p id="tutorialText" class="tutorial-copy"></p><div class="tutorial-actions"><button id="tutorialSkip" type="button">Pular tutorial</button><button id="tutorialNext" class="tutorial-next" type="button">Próximo →</button></div></section>
+</div>
+
+<script>
+(()=>{
+const $=id=>document.getElementById(id);
+const productData=[
+["🖱️ Cursor de Mouse",1,30,"auto"],
+["🤖 Robô Clicador",2,90,"auto"],
+["🐜 Formiga Trabalhadora",4,180,"auto"],
+["⚙️ Mini Engrenagem",8,360,"auto"],
+["🧑‍🍳 Cozinheiro Automático",15,700,"auto"],
+["🐝 Abelha Confeiteira",28,1300,"auto"],
+["🏭 Fábrica de Cookies",50,2500,"auto"],
+["🚚 Caminhão de Entregas",90,4800,"auto"],
+["🧪 Laboratório Doce",160,9000,"auto"],
+["🛰️ Satélite Confeiteiro",280,17000,"auto"],
+["🧙 Mago da Massa",500,32000,"auto"],
+["🌋 Vulcão de Calda",900,60000,"auto"],
+["🌌 Portal Açucarado",1600,115000,"auto"],
+["🪐 Planeta de Cookies",2900,220000,"auto"],
+["♾️ Fábrica Infinita",5200,420000,"auto"],
+["👆 Clique Reforçado",1,40,"click"],
+["💪 Dedo de Aço",3,120,"click"],
+["🍯 Calda Energética",7,240,"click"],
+["✨ Granulado Mágico",15,480,"click"],
+["🔥 Toque Flamejante",30,900,"click"],
+["⚡ Pulso Elétrico",60,1700,"click"],
+["💎 Joia Multiplicadora",120,3200,"click"],
+["🌈 Toque Arco-Íris",240,6000,"click"],
+["🧬 DNA Açucarado",480,11500,"click"],
+["🌠 Energia Estelar",950,22000,"click"],
+["🌀 Dobra Dimensional",1900,42000,"click"],
+["☄️ Cometa de Canela",3800,80000,"click"],
+["👑 Coroa do Confeiteiro",7600,150000,"click"],
+["🌞 Núcleo Solar",15000,285000,"click"],
+["🍪 Toque Supremo",30000,540000,"click"]
+];
+const products=productData.map(x=>({name:x[0],bonus:BigInt(x[1]),base:BigInt(x[2]),kind:x[3]}));
+const pepperProductNames=["🌶️ Pimenta dedo-de-moça","🫑 Pimentão apimentado","🌶️ Jalapeño","🔥 Pimenta malagueta","🌶️ Pimenta biquinho","🌶️ Pimenta caiena","🌶️ Habanero","🌶️ Pimenta fantasma","🌶️ Scotch bonnet","🌶️ Carolina Reaper","🌶️ Pimenta nuclear","🌶️ Molho extra forte","🌶️ Estufa apimentada","🌶️ Fazenda de jalapeños","🌶️ Vulcão de pimenta","🌶️ Dragão ardente","🌶️ Colheita radioativa","🌶️ Pimenta cósmica","🌶️ Galáxia picante","🌶️ Supernova ardida","🌶️ Império do molho","🌶️ Reator de capsaicina","🌶️ Pimenta ancestral","🌶️ Sol apimentado","🌶️ Pimenta dimensional","🌶️ Nebulosa ardente","🌶️ Planeta jalapeño","🌶️ Buraco negro picante","🌶️ Deusa da capsaicina","♾️ Pimenta suprema","🌋 Mina de capsaicina","🧪 Laboratório ardente","🚀 Foguete jalapeño","🪐 Sistema apimentado","☄️ Cometa de fogo","🏭 Fábrica de molho","🐉 Dragão cósmico","👑 Coroa picante","🌌 Multiverso ardido","💎 Cristal de capsaicina","⚛️ Reator estelar","🌀 Portal de pimentas","🌠 Chuva de jalapeños","🏰 Reino da pimenta","♾️ Singularidade Suprema","🌞 Núcleo solar ardente","🧬 Pimenta mutante","🌐 Rede intergaláctica","👾 Imperador picante","🌶️ Lenda definitiva"];
+const productLabel=(p,i)=>displaySettings.mode==="pepper"?pepperProductNames[i]:p.name;
+
+const upDefs=[
+{name:"🤖 Máquina de cookies Automática",desc:"+1 cookie automático por segundo por nível.",base:500n,max:Infinity},
+{name:"⚡ Turbo da máquina de cookies",desc:"Multiplica a velocidade da máquina de cookies por nível.",base:3000n,max:Infinity},
+{name:"🌡️ Estufa otimizada",desc:"Aumenta em 3% o ganho por toque por nível.",base:1500n,max:Infinity},
+{name:"💪 Glacê Superforte",desc:"+5 cookies por toque e por nível.",base:5000n,max:Infinity},
+{name:"🎯 Ritmo de produção",desc:"Gera +1 cookie automático por segundo por nível.",base:8000n,max:Infinity},
+{name:"🧲 Ímã de cookies",desc:"Aumenta em 10% os cookies recebidos por toque por nível.",base:12000n,max:Infinity},
+{name:"🌱 Solo fértil",desc:"Gera +2 cookies automáticos por segundo por nível.",base:18000n,max:Infinity},
+{name:"💰 Cofre de produção",desc:"Bônus permanente de +2% no ganho total por nível.",base:30000n,max:Infinity},
+{name:"🛠️ Manutenção turbo",desc:"Aumenta em 1 o multiplicador da máquina de cookies por nível.",base:45000n,max:Infinity},
+{name:"🧪 Extrato concentrado",desc:"Aumenta em 5% o ganho por toque por nível.",base:60000n,max:Infinity}
+];
+let gameName="";
+let s={money:0n,total:0n,reb:0n,levels:Array(50).fill(0),itemUps:Array(30).fill(0),ups:Array(10).fill(0),tankEnabled:false,tankUps:[0,0,0],clicks:0,bought:0,dev:{click:0,shop:1,up:1,itemMult:1,prices:Array(50).fill("")}};
+const tankDefs=[
+ {name:"💥 Canhão de sementes",desc:"+5% de ganho por toque por nível.",base:2500n,max:Infinity},
+ {name:"⚙️ Esteiras turbo",desc:"+3 cookies automáticos por segundo por nível.",base:4000n,max:30},
+ {name:"🛡️ Chassi reforçado",desc:"+2% de ganho total por nível.",base:6500n,max:Infinity}
+];
+const MAX=null,cap=n=>n;
+const fmt=n=>{n=BigInt(n);if(n<1000000n)return n.toLocaleString("pt-BR");const u=["K","M","B","T","Qa","Qi","Sx","Sp","Oc","No"];let v=n,i=-1;while(v>=1000n&&i<u.length-1){v/=1000n;i++;}return v>=1000n?v.toString()+"e"+((i+2)*3):v.toString()+" "+u[i];};
+function save(){try{localStorage.setItem("ultimate-clicker-save",JSON.stringify({money:String(s.money),total:String(s.total),reb:String(s.reb),levels:s.levels,itemUps:s.itemUps,ups:s.ups,playerName:gameName,clicks:s.clicks,bought:s.bought,tankEnabled:s.tankEnabled,tankUps:s.tankUps,dev:s.dev}));return true;}catch(e){return false;}}
+function load(){try{let d=JSON.parse(localStorage.getItem("ultimate-clicker-save"));if(!d)return;s.money=cap(BigInt(d.money||"0"));s.total=cap(BigInt(d.total||"0"));s.reb=BigInt(d.reb||"0");s.levels=Array.from({length:50},(_,i)=>Math.max(0,Number(d.levels?.[i]||0)));s.itemUps=Array.from({length:30},(_,i)=>Math.max(0,Number(d.itemUps?.[i]||0)));s.ups=Array.from({length:10},(_,i)=>Math.max(0,Number(d.ups?.[i]||0)));gameName=String(d.playerName||"").slice(0,24);
+s.clicks=Math.max(0,Number(d.clicks||0));s.bought=Math.max(0,Number(d.bought||0));s.tankEnabled=!!d.tankEnabled;s.tankUps=Array.from({length:3},(_,i)=>Math.max(0,Number(d.tankUps?.[i]||0)));
+s.dev={click:0,shop:1,up:1,itemMult:1,...(d.dev||{})};s.dev.prices=Array.from({length:50},(_,i)=>String(d.dev?.prices?.[i]||"").replace(/\D/g,"").slice(0,30));}catch(e){}}
+load();
+const nameOverlay=$("nameOverlay");function askGameName(){nameOverlay.style.display="flex";$("gameNameInput").value=gameName||"";setTimeout(()=>$("gameNameInput").focus(),50);}function updatePersistentGameName(){const el=$("persistentGameName");if(el)el.textContent="🎮 "+(gameName||"Minha partida");}function confirmGameName(){const v=$("gameNameInput").value.trim().slice(0,24);if(!v){$("gameNameInput").focus();return;}gameName=v;nameOverlay.style.display="none";$("brand");const sub=document.querySelector(".brand p");if(sub)sub.textContent="Partida: "+gameName+" · Um toque de cada vez…";updatePersistentGameName();save();}$("confirmGameName").addEventListener("click",confirmGameName);$("gameNameInput").addEventListener("keydown",e=>{if(e.key==="Enter")confirmGameName();});if(!gameName)askGameName();else{const savedNameLabel=document.querySelector(".brand p");if(savedNameLabel)savedNameLabel.textContent="Partida: "+gameName+" · Um toque de cada vez…";updatePersistentGameName();}
+const tutorialSteps=[
+ {title:"Bem-vindo ao Cookie Clicker!",text:"Seu objetivo é construir a maior coleção de cookies. Vamos conhecer o básico em poucos passos."},
+ {title:"1. Clique no cookie",text:"Toque no cookie que fica no centro da tela. Cada toque aumenta sua produção e o contador registra quantos cliques você já deu."},
+ {title:"2. Acompanhe seu próximo objetivo",text:"A caixa de lembrete abaixo do cookie informa quanto falta para revelar o próximo item da loja ou fazer um Rebirth."},
+ {title:"3. Abra a loja",text:"Use o botão do carrinho para acessar a Loja, os Upgrades e os Objetivos. A loja já começa liberada: acumule cookies para revelar novos itens. O Rebirth é uma evolução extra, não uma exigência para comprar."},
+ {title:"4. Evolua do seu jeito",text:"Compre itens, melhore sua produção e complete objetivos. Se quiser, ative o Silo de Granulados nas Configurações para desbloquear upgrades extras."}
+];
+let tutorialIndex=0;
+function showTutorialStep(){const step=tutorialSteps[tutorialIndex];$("tutorialStep").textContent="PASSO "+(tutorialIndex+1)+" DE "+tutorialSteps.length;$("tutorialTitle").textContent=step.title;$("tutorialText").textContent=step.text;$("tutorialNext").textContent=tutorialIndex===tutorialSteps.length-1?"Começar a jogar 🍪":"Próximo →";}
+function finishTutorial(){$("tutorialOverlay").hidden=true;}
+$("tutorialNext").onclick=()=>{if(tutorialIndex<tutorialSteps.length-1){tutorialIndex++;showTutorialStep();}else finishTutorial();};
+$("tutorialSkip").onclick=finishTutorial;
+showTutorialStep();$("tutorialOverlay").hidden=false;
+let localStats={visits:0,clicks:0,purchases:0,playedSeconds:0};
+try{localStats={visits:0,clicks:0,purchases:0,playedSeconds:0,...JSON.parse(localStorage.getItem("pepper-local-stats")||"{}")};}catch(e){}
+localStats.visits++;try{localStorage.setItem("pepper-local-stats",JSON.stringify(localStats));}catch(e){}
+const saveStats=()=>{try{localStorage.setItem("pepper-local-stats",JSON.stringify(localStats));}catch(e){}};
+const objectives=[
+{name:"Dedos incansáveis",desc:"Clique 5.000 vezes.",done:()=>s.clicks>=5000},
+{name:"Mestre dos cliques",desc:"Clique 50.000 vezes.",done:()=>s.clicks>=50000},
+{name:"Colheita respeitável",desc:"Colha 100.000 cookies no total.",done:()=>s.total>=100000n},
+{name:"Império do cookie",desc:"Colha 10.000.000 cookies no total.",done:()=>s.total>=10000000n},
+{name:"Renascimento avançado",desc:"Faça 5 Rebirths.",done:()=>s.reb>=5n},
+{name:"Lenda renascida",desc:"Faça 15 Rebirths.",done:()=>s.reb>=15n},
+{name:"Comprador profissional",desc:"Compre 75 itens ou upgrades.",done:()=>s.bought>=75},
+{name:"Magnata dos cookies",desc:"Compre 250 itens ou upgrades.",done:()=>s.bought>=250}
+];
+const objectiveDone=()=>objectives.filter(o=>o.done()).length;
+let secretSettingsClicks=0;
+let secretDevRevealed=false, secretDevActive=false;
+const devUnlocked=()=>objectiveDone()>=8||secretDevActive;
+function objectiveProgress(index){
+ const values=[s.clicks,s.clicks,s.total,s.total,s.reb,s.reb,s.bought,s.bought];
+ const targets=[5000,50000,100000n,10000000n,5n,15n,75,250];
+ const current=values[index],target=targets[index];
+ return current>=target?"Concluído":fmt(BigInt(current))+" / "+fmt(BigInt(target));
+}
+function price(base,level,rate=115){let p=base;for(let i=0;i<level;i++){p=p*BigInt(rate)/100n+1n;}return p;}
+function scaledPrice(value,multiplier){const tenths=BigInt(Math.max(1,Math.round(Number(multiplier)*10)));return (value*tenths+9n)/10n;}
+function itemPrice(i){const custom=String(s.dev.prices?.[i]||"").replace(/\D/g,"");return custom?BigInt(custom):scaledPrice(price(products[i].base,s.levels[i]),s.dev.shop);}
+function shopUnlockAt(i){return i===0?0n:products[i].base*10n;}
+// Ordem de exibição: quatro melhorias de clique entram cedo, sem alterar os índices salvos.
+// Assim, saves antigos continuam apontando para os mesmos itens e níveis.
+let shopOrder=[0,15,1,16,2,17,3,18,...Array.from({length:products.length},(_,i)=>i).filter(i=>![0,1,2,3,15,16,17,18].includes(i))];
+function shopPosition(i){return shopOrder.indexOf(i);}
+function shopPreviousIndex(i){const pos=shopPosition(i);return pos>0?shopOrder[pos-1]:-1;}
+function shopItemUnlocked(i){const pos=shopPosition(i),prev=shopPreviousIndex(i);return pos===0||s.levels[i]>0||(prev>=0&&s.levels[prev]>0);}
+function shopVisibleCount(){let firstLocked=shopOrder.length;for(let pos=1;pos<shopOrder.length;pos++){const i=shopOrder[pos],prev=shopOrder[pos-1];if(!(s.levels[prev]>0)&&!(s.levels[i]>0)){firstLocked=pos;break;}}return Math.min(shopOrder.length,firstLocked+1);}
+try{localStorage.setItem("ultimate-clicker-shop-order",JSON.stringify(shopOrder));}catch(e){}
+function shopPageCount(){return Math.max(1,Math.ceil(shopVisibleCount()/10));}
+function buildDevPriceEditor(){
+ const host=$("devPrices");host.innerHTML="";
+ products.forEach((p,i)=>{const wrap=document.createElement("label");wrap.className="devprice";const name=document.createElement("span");name.textContent=(i+1)+". "+productLabel(p,i);const input=document.createElement("input");input.type="text";input.inputMode="numeric";input.placeholder="Automático";input.dataset.productPrice=String(i);input.value=s.dev.prices?.[i]||"";wrap.append(name,input);host.append(wrap);});
+}
+// O painel só altera o estado do jogo quando o jogador confirma em "Aplicar mudanças".
+$("devApply").addEventListener("click",()=>{
+ const readNumber=(id,fallback,min,max)=>{
+  const raw=$(id).value.trim();
+  if(raw==="")return fallback;
+  const value=Number(raw);
+  if(!Number.isFinite(value))return fallback;
+  return Math.max(min,Math.min(max,value));
+ };
+ s.dev.click=Math.floor(readNumber("devClick",0,0,Number.MAX_SAFE_INTEGER));
+ s.dev.shop=readNumber("devShop",1,0.1,100);
+ s.dev.up=readNumber("devUp",1,0.1,100);
+ s.dev.itemMult=Math.floor(readNumber("devItemMult",1,1,1000000));
+ s.dev.prices=Array.from({length:50},(_,i)=>String($("devPrices").querySelector(`[data-product-price="${i}"]`)?.value||"").replace(/\D/g,"").slice(0,30));
+ save();render();note("🧪 Mudanças do desenvolvedor aplicadas e salvas!");uiSound();
+});
+$("devDefault").addEventListener("click",()=>{
+ s.dev={click:0,shop:1,up:1,itemMult:1,prices:Array(50).fill("")};
+ ["devClick","devShop","devUp","devItemMult"].forEach((id,i)=>$(id).value=[0,1,1,1][i]);
+ buildDevPriceEditor();save();render();note("Configurações do desenvolvedor restauradas.");uiSound();
+});
+
+const rebirthMultiplier=()=>2n**(s.reb>30n?30n:s.reb); // Cada Rebirth dobra toda a produção permanentemente.
+const itemFactor=i=>100n+25n*BigInt(s.itemUps?.[i]||0);
+const gain=()=>{const devBonus=BigInt(Math.max(0,Math.floor(Number(s.dev.click)||0)));const itemBonus=products.reduce((sum,p,i)=>p.kind==="click"?sum+(BigInt(s.levels[i])*p.bonus*itemFactor(i)/100n*BigInt(Math.max(1,Math.floor(Number(s.dev.itemMult)||1)))):sum,0n);const raw=1n+s.reb+devBonus+itemBonus+BigInt(s.ups[3])*5n;const pct=100+10*s.ups[5]+2*s.ups[7]+3*s.ups[2]+5*s.ups[9]+(s.tankEnabled?(5*s.tankUps[0]+2*s.tankUps[2]):0);return raw*BigInt(pct)*rebirthMultiplier()/100n;};
+const cps=()=>{let auto=0n;products.forEach((p,i)=>{if(p.kind==="auto")auto+=BigInt(s.levels[i])*p.bonus*itemFactor(i)/100n;});return Number(auto)*Number(rebirthMultiplier())+(s.ups[0]*(1+s.ups[1]+s.ups[8])+2*s.ups[6]+s.ups[4]+(s.tankEnabled?3*s.tankUps[1]:0))*Number(rebirthMultiplier());};
+const OFFLINE_FARM_MAX_SECONDS=24*60*60;
+function updateOfflineTimestamp(){try{if(offlineFarmEnabled)localStorage.setItem("pepper-offline-last-seen",String(Date.now()));}catch(e){}}
+function applyOfflineFarm(){
+ offlineFarmEnabled=$("offlineFarmToggle").checked;
+ try{localStorage.setItem("pepper-offline-farm-enabled",String(offlineFarmEnabled));localStorage.setItem("pepper-offline-last-seen",String(Date.now()));}catch(e){}
+ note(offlineFarmEnabled?"🌙 Farm Offline ativado!":"Farm Offline desativado.");
+}
+function collectOfflineFarm(){
+ if(!offlineFarmEnabled){updateOfflineTimestamp();return;}
+ let previous=0;try{previous=Number(localStorage.getItem("pepper-offline-last-seen")||0);}catch(e){}
+ const now=Date.now();updateOfflineTimestamp();
+ if(!Number.isFinite(previous)||previous<=0||cps()<=0)return;
+ const elapsed=Math.max(0,Math.min(OFFLINE_FARM_MAX_SECONDS,Math.floor((now-previous)/1000)));
+ const earned=BigInt(Math.floor(cps()*elapsed));
+ if(elapsed<=0||earned<=0n)return;
+ add(earned);save();
+ $("offlineRewardText").textContent="Sua autoprodução produziu cookies durante "+formatPlayedTime(elapsed)+" fora do jogo.";
+ $("offlineRewardAmount").textContent="+"+fmt(earned)+(displaySettings.mode==="pepper"?" 🌶️":" 🍪");
+ $("offlineRewardOverlay").hidden=false;
+}
+$("offlineFarmToggle").addEventListener("change",applyOfflineFarm);
+$("offlineRewardClaim").addEventListener("click",()=>{$("offlineRewardOverlay").hidden=true;uiSound();render();save();});
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")updateOfflineTimestamp();else{collectOfflineFarm();render();}});
+window.addEventListener("pagehide",updateOfflineTimestamp);
+const goal=()=>cap(10000n*(5n**(s.reb>100n?100n:s.reb)));
+function add(n){n=cap(n);s.money=cap(s.money+n);s.total=cap(s.total+n);}
+let audio=null,audioMaster=null,audioMusicGain=null,audioSfxGain=null;
+let musicVolume=65,sfxVolume=75;
+try{musicVolume=Math.max(0,Math.min(100,Number(localStorage.getItem("ultimate-clicker-music-volume")??65)));sfxVolume=Math.max(0,Math.min(100,Number(localStorage.getItem("ultimate-clicker-sfx-volume")??75)));}catch(e){}
+function applyVolume(){if(audio){audioMusicGain.gain.setTargetAtTime(musicVolume/100,audio.currentTime,.025);audioSfxGain.gain.setTargetAtTime(sfxVolume/100,audio.currentTime,.025);}for(const [id,val,label] of [["musicVolume",musicVolume,"musicVolumeValue"],["sfxVolume",sfxVolume,"sfxVolumeValue"]]){const slider=$(id),out=$(label);if(slider)slider.value=String(val);if(out)out.textContent=val+"%";}}
+function getAudio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return null;if(!audio){audio=new AC();audioMusicGain=audio.createGain();audioSfxGain=audio.createGain();audioMaster=audioSfxGain;audioMusicGain.gain.value=musicVolume/100;audioSfxGain.gain.value=sfxVolume/100;audioMusicGain.connect(audio.destination);audioSfxGain.connect(audio.destination);}if(audio.state==="suspended")audio.resume();return audio;}
+function uiSound(){try{const a=getAudio();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.setValueAtTime(620,t);o.frequency.exponentialRampToValueAtTime(880,t+.055);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.055,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+.09);o.connect(g);g.connect(audioMaster);o.start(t);o.stop(t+.1);}catch(e){}}
+function cashSound(){try{const a=getAudio();if(!a)return;const t=a.currentTime;[740,990,1320].forEach((f,i)=>{const o=a.createOscillator(),g=a.createGain();o.type="triangle";o.frequency.setValueAtTime(f,t+i*.055);g.gain.setValueAtTime(.0001,t+i*.055);g.gain.exponentialRampToValueAtTime(.09,t+i*.055+.008);g.gain.exponentialRampToValueAtTime(.0001,t+i*.055+.13);o.connect(g);g.connect(audioMaster);o.start(t+i*.055);o.stop(t+i*.055+.14);});}catch(e){}}
+function jiggle(){/* Jiggle physics removida a pedido; mantemos transições suaves sem balanço. */}
+let keyboardNoiseBuffer=null,lastClickSoundAt=0;
+function clickSound(){
+ try{
+  const a=getAudio();if(!a)return;
+  const now=performance.now();if(now-lastClickSoundAt<22)return;lastClickSoundAt=now;
+  const t=a.currentTime;
+  // Som sintetizado de teclado mecânico: ataque agudo da tecla + "thock" curto.
+  if(!keyboardNoiseBuffer){const length=Math.floor(a.sampleRate*.045);keyboardNoiseBuffer=a.createBuffer(1,length,a.sampleRate);const data=keyboardNoiseBuffer.getChannelData(0);for(let i=0;i<length;i++){const x=i/length;data[i]=(Math.random()*2-1)*Math.pow(1-x,2.7);}}
+  const noise=a.createBufferSource(),filter=a.createBiquadFilter(),ng=a.createGain();
+  noise.buffer=keyboardNoiseBuffer;filter.type="bandpass";filter.frequency.value=2450;filter.Q.value=.8;
+  ng.gain.setValueAtTime(.0001,t);ng.gain.exponentialRampToValueAtTime(.17,t+.0015);ng.gain.exponentialRampToValueAtTime(.0001,t+.032);
+  noise.connect(filter);filter.connect(ng);ng.connect(audioSfxGain);noise.start(t);
+  const o=a.createOscillator(),g=a.createGain();o.type="triangle";o.frequency.setValueAtTime(185,t);o.frequency.exponentialRampToValueAtTime(72,t+.038);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.105,t+.002);g.gain.exponentialRampToValueAtTime(.0001,t+.052);
+  o.connect(g);g.connect(audioSfxGain);o.start(t);o.stop(t+.055);
+ }catch(e){}
+}
+function beep(freq=180,dur=.3){try{const a=getAudio();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type="sawtooth";o.frequency.setValueAtTime(freq,t);o.frequency.linearRampToValueAtTime(freq*2,t+dur*.5);g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.12,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(g);g.connect(audioMaster);o.start(t);o.stop(t+dur+.02);}catch(e){}}
+// Trilha eletrônica original: bateria, baixo pulsante e arpejos que mudam de seção.
+let musicOn=true,musicTimer=null,musicStep=0,musicChord=0,musicSection=0,musicTrack=0;
+const musicProfiles=[{tempo:.125,transpose:0,root:110},{tempo:.105,transpose:5,root:123.47},{tempo:.145,transpose:-2,root:98},{tempo:.085,transpose:7,root:130.81},{tempo:.19,transpose:-5,root:82.41}];
+const chordSets=[[0,3,7,10],[5,8,0,3],[9,0,4,7],[7,10,2,5],[2,5,9,0]];
+const leadSets=[[0,7,10,14,12,10,7,3,0,7,12,15,14,10,7,5],[0,3,7,10,7,12,10,7,5,10,14,12,10,7,3,0],[7,10,14,17,14,12,10,7,5,9,12,16,14,12,9,5]];
+function musicNote(freq,when,duration,volume=.025,type="sine"){
+ if(!audio)return;const o=audio.createOscillator(),g=audio.createGain(),f=audio.createBiquadFilter();
+ o.type=type;o.frequency.setValueAtTime(freq,when);f.type="lowpass";f.frequency.value=type==="sawtooth"?1500:3200;
+ g.gain.setValueAtTime(.0001,when);g.gain.exponentialRampToValueAtTime(volume,when+.008);g.gain.exponentialRampToValueAtTime(.0001,when+duration);
+ o.connect(f);f.connect(g);g.connect(audioMusicGain);o.start(when);o.stop(when+duration+.025);
+}
+function musicKick(when){if(!audio)return;const o=audio.createOscillator(),g=audio.createGain();o.type="sine";o.frequency.setValueAtTime(125,when);o.frequency.exponentialRampToValueAtTime(42,when+.12);g.gain.setValueAtTime(.18,when);g.gain.exponentialRampToValueAtTime(.0001,when+.14);o.connect(g);g.connect(audioMusicGain);o.start(when);o.stop(when+.15);}
+function musicHat(when,vol=.018){if(!audio)return;const n=audio.createBuffer(1,Math.floor(audio.sampleRate*.035),audio.sampleRate),d=n.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);const src=audio.createBufferSource(),f=audio.createBiquadFilter(),g=audio.createGain();src.buffer=n;f.type="highpass";f.frequency.value=6500;g.gain.setValueAtTime(vol,when);g.gain.exponentialRampToValueAtTime(.0001,when+.035);src.connect(f);f.connect(g);g.connect(audioMusicGain);src.start(when);}
+function musicLoop(){
+ if(!musicOn||!audio)return;const profile=musicProfiles[musicTrack]||musicProfiles[0],now=audio.currentTime,beat=profile.tempo;
+ if(musicStep%32===0){musicSection=(musicSection+1)%leadSets.length;musicChord=(musicChord+1)%chordSets.length;}
+ const chord=chordSets[(musicChord+musicTrack)%chordSets.length],root=profile.root*Math.pow(2,[0,-5,-3,-7,-10][(musicChord+musicTrack)%5]/12);
+ const pattern=leadSets[(musicSection+musicTrack)%leadSets.length],degree=pattern[musicStep%pattern.length]+profile.transpose;
+ if(musicTrack===3){ // Pixel Rush: arpejos rápidos e batida 8-bit
+  if(musicStep%4===0)musicKick(now);if(musicStep%2===1)musicHat(now,.012);
+  const arp=[0,7,12,19,12,7,3,10][musicStep%8];musicNote(root*Math.pow(2,arp/12),now,.075,.022,"square");
+  if(musicStep%4===0)musicNote(root/2,now,.11,.035,"triangle");
+ }else if(musicTrack===4){ // Midnight Lo-Fi: acordes suaves, sem kick forte
+  if(musicStep%8===0)musicNote(root/2,now,.42,.022,"sine");
+  if(musicStep%4===0)musicHat(now,.008);
+  const d=chord[(musicStep/2|0)%4];if(musicStep%2===0)musicNote(root*Math.pow(2,(d+profile.transpose)/12),now,.34,.012,"triangle");
+  if(musicStep%4===2)musicNote(root*2*Math.pow(2,degree/12),now,.22,.009,"sine");
+ }else{
+  if(musicStep%4===0)musicKick(now);if(musicStep%4===2)musicNote(root/2,now,.16,.04,musicTrack===1?"sawtooth":"triangle");
+  if(musicStep%2===1)musicHat(now,musicTrack===1?.032:.018);
+  if(musicStep%8===4)musicNote(root*2,now,.1,.018,musicTrack===2?"sine":"triangle");
+  if(musicStep%2===0){musicNote((musicTrack===2?247:330)*Math.pow(2,degree/12),now+.012,.105,.018,musicTrack===2?"sawtooth":"square");if(musicStep%8===0)musicNote(660*Math.pow(2,degree/12),now+.025,.08,.009,"triangle");}
+  if(musicStep%4===1){const d=chord[(musicStep/2|0)%4];musicNote(220*Math.pow(2,(d+profile.transpose)/12),now+.025,.13,.013,"triangle");}
+ }
+ musicStep++;musicTimer=setTimeout(musicLoop,beat*1000);
+}
+function startMusic(){if(!musicOn)return;try{getAudio();if(!musicTimer)musicLoop();}catch(e){}}
+function stopMusic(){clearTimeout(musicTimer);musicTimer=null;}
+let offlineFarmEnabled=false;
+try{offlineFarmEnabled=localStorage.getItem("pepper-offline-farm-enabled")==="true";}catch(e){}
+$("offlineFarmToggle").checked=offlineFarmEnabled;
+const settingsOverlay=$("settingsOverlay");
+let selectedTab="clicker";
+const displaySettings={layout:"new",homeLayout:"menu",rebirth:"show",mode:"cookie",theme:"cookie",pixel:false,devMode:false};
+try{const ds=JSON.parse(localStorage.getItem("ultimate-clicker-display-settings")||"{}");displaySettings.layout=ds.layout==="old"?"old":"new";displaySettings.homeLayout=["menu","shop","up","objectives","all"].includes(ds.homeLayout)?ds.homeLayout:"menu";displaySettings.pixel=!!ds.pixel;displaySettings.rebirth=ds.rebirth==="hide"?"hide":"show";displaySettings.mode=ds.mode==="pepper"?"pepper":"cookie";displaySettings.theme=["cookie","cookie-choco","cookie-ocean","cookie-mint","cookie-galaxy","cookie-sunset"].includes(ds.theme)?ds.theme:"cookie";displaySettings.detail=ds.detail==="detailed"?"detailed":"normal";displaySettings.devMode=false;}catch(e){}
+$("layoutMode").value=displaySettings.layout;$("detailMode").value=displaySettings.detail||"normal";$("homeLayout").value=displaySettings.homeLayout;$("pixelToggle").checked=displaySettings.pixel;$("rebirthPlacement").value=displaySettings.rebirth;$("themeSelect").value=displaySettings.theme;$("gameModeSelect").value=displaySettings.mode;$("secretDevToggle").checked=displaySettings.devMode;
+const shopHome=$("shopHome"),shopDock=$("shopDock"),shopView=$("shopview"),clickerView=$("clickerview"),extrasPanel=$("objectivesview").parentElement;extrasPanel.id="extrasPanel";
+extrasPanel.prepend($("rebirthDock"));extrasPanel.append(shopView);clickerView.after(extrasPanel);extrasPanel.hidden=true;$("rebirthDock").hidden=true;
+function applyTheme(){document.body.classList.remove("theme-cookie","theme-cookie-choco","theme-cookie-ocean","theme-cookie-mint","theme-cookie-galaxy","theme-cookie-sunset","theme-ocean","theme-forest","theme-purple","theme-gold","theme-pink");const cookie=displaySettings.mode!=="pepper";const pepperThemes={cookie:"theme-ocean", "cookie-choco":"theme-gold", "cookie-ocean":"theme-ocean", "cookie-mint":"theme-forest", "cookie-galaxy":"theme-purple", "cookie-sunset":"theme-pink"};document.body.classList.add(cookie?("theme-"+displaySettings.theme):(pepperThemes[displaySettings.theme]||"theme-ocean"));const tap=$("tap");tap.querySelector(".pepper").textContent=cookie?"🍪":"🌶️";tap.setAttribute("aria-label",cookie?"Toque no cookie para ganhar cookies":"Toque na pimenta para ganhar pimentas");tap.title=cookie?"Toque no cookie":"Toque na pimenta";$("gameModeSelect").value=displaySettings.mode;$("cookiePaletteRow").hidden=false;$("cookiePaletteRow").querySelector("label").textContent=cookie?"🎨 Tema do universo cookie":"🎨 Tema do universo pimenta";$("tabclicker").textContent=cookie?"🍪 cookie":"🌶️ Pimenta";}
+function applyDisplaySettings(){const visibleHome=displaySettings.homeLayout;$("cartQuickMenu").querySelectorAll("button[data-dest]").forEach(b=>{const d=b.dataset.dest;b.hidden=(d==="shop"&&["shop","all"].includes(visibleHome))||(d==="up"&&["up","all"].includes(visibleHome))||(d==="objectives"&&["objectives","all"].includes(visibleHome));});document.body.classList.toggle("home-show-rebirth",displaySettings.rebirth==="show");document.body.classList.toggle("layout-old",displaySettings.layout==="old");document.body.classList.toggle("home-dashboard",displaySettings.homeLayout!=="menu");document.body.classList.toggle("pixel-mode",!!displaySettings.pixel);document.body.classList.toggle("detailed-mode",displaySettings.detail==="detailed");const dashboard=displaySettings.homeLayout!=="menu";clickerView.classList.toggle("dashboard-layout",dashboard);clickerView.after(extrasPanel);extrasPanel.hidden=!(document.body.classList.contains("menu-open")||displaySettings.homeLayout!=="menu"||displaySettings.rebirth==="show");$("rebirthDock").hidden=!(document.body.classList.contains("menu-open")?selectedTab==="rebirth":displaySettings.rebirth==="show");$("rebirthTop").hidden=true;$("rebCountShop").hidden=false;applyTheme();try{localStorage.setItem("ultimate-clicker-display-settings",JSON.stringify(displaySettings));}catch(e){}if(typeof render==="function")render();}
+$("rebirthPlacement").addEventListener("change",e=>{displaySettings.rebirth=e.target.value;applyDisplaySettings();});
+$("layoutMode").addEventListener("change",e=>{displaySettings.layout=e.target.value==="old"?"old":"new";applyDisplaySettings();});$("detailMode").addEventListener("change",e=>{displaySettings.detail=e.target.value==="detailed"?"detailed":"normal";applyDisplaySettings();uiSound();});$("homeLayout").addEventListener("change",e=>{displaySettings.homeLayout=e.target.value;applyDisplaySettings();goHome();});
+$("pixelToggle").addEventListener("change",e=>{displaySettings.pixel=e.target.checked;applyDisplaySettings();});
+$("themeSelect").addEventListener("change",e=>{displaySettings.theme=e.target.value;applyDisplaySettings();});$("gameModeSelect").addEventListener("change",e=>{displaySettings.mode=e.target.value;applyDisplaySettings();});
+$("secretDevToggle").checked=false;
+$("secretDevToggle").addEventListener("change",e=>{secretDevActive=e.target.checked;render();uiSound();});
+$("settingsTitle").addEventListener("click",()=>{secretSettingsClicks++;if(secretSettingsClicks>=5&&!secretDevRevealed){secretDevRevealed=true;$("secretDevSetting").hidden=false;note("🧪 Opção de painel de desenvolvedor desbloqueada nas configurações!");uiSound();}});
+
+$("tankToggle").checked=s.tankEnabled;
+$("tankToggle").addEventListener("change",e=>{s.tankEnabled=e.target.checked;save();render();uiSound();note(s.tankEnabled?"🛡️ Silo de Granulados ativado!":"Tanque desativado; seus upgrades foram preservados.");});
+function closeSettings(){settingsOverlay.style.display="none";}
+$("settingsOpen").onclick=()=>{uiSound();applyVolume();$("tankToggle").checked=s.tankEnabled;$("layoutMode").value=displaySettings.layout;$("detailMode").value=displaySettings.detail||"normal";$("homeLayout").value=displaySettings.homeLayout;$("pixelToggle").checked=displaySettings.pixel;$("rebirthPlacement").value=displaySettings.rebirth;$("themeSelect").value=displaySettings.theme;$("gameModeSelect").value=displaySettings.mode;$("cookiePaletteRow").hidden=false;$("secretDevToggle").checked=secretDevActive;$("secretDevSetting").hidden=!secretDevRevealed;settingsOverlay.style.display="flex";};
+$("settingsClose").onclick=()=>{uiSound();closeSettings();};
+settingsOverlay.addEventListener("click",e=>{if(e.target===settingsOverlay)closeSettings();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&settingsOverlay.style.display==="flex")closeSettings();});
+$("musicVolume").addEventListener("input",e=>{musicVolume=Math.max(0,Math.min(100,Number(e.target.value)||0));applyVolume();try{localStorage.setItem("ultimate-clicker-music-volume",String(musicVolume));}catch(err){}});
+$("sfxVolume").addEventListener("input",e=>{sfxVolume=Math.max(0,Math.min(100,Number(e.target.value)||0));applyVolume();try{localStorage.setItem("ultimate-clicker-sfx-volume",String(sfxVolume));}catch(err){}});
+const visualOptions=["effectsToggle","rainbowToggle","pulseToggle","particlesToggle","glowToggle","confettiToggle"];
+function saveVisualSettings(){const values={};visualOptions.forEach(id=>values[id]=$(id).checked);try{localStorage.setItem("ultimate-clicker-visual-options",JSON.stringify(values));}catch(e){}document.body.classList.toggle("effects-off",!values.effectsToggle);document.body.classList.toggle("rainbow-buttons",values.rainbowToggle&&values.effectsToggle);document.body.classList.toggle("pulse-off",!values.pulseToggle||!values.effectsToggle);document.body.classList.toggle("particles-off",!values.particlesToggle||!values.effectsToggle);document.body.classList.toggle("glow-off",!values.glowToggle||!values.effectsToggle);document.body.classList.toggle("confetti-off",!values.confettiToggle||!values.effectsToggle);}
+try{const saved=JSON.parse(localStorage.getItem("ultimate-clicker-visual-options")||"{}");visualOptions.forEach(id=>{if(typeof saved[id]==="boolean")$(id).checked=saved[id];});}catch(e){}
+visualOptions.forEach(id=>$(id).addEventListener("change",saveVisualSettings));saveVisualSettings();
+$("musicSelect").addEventListener("change",e=>{musicTrack=Math.max(0,Math.min(4,Number(e.target.value)||0));musicStep=0;musicChord=0;musicSection=0;stopMusic();if(musicOn)startMusic();uiSound();try{localStorage.setItem("ultimate-clicker-music-track",String(musicTrack));}catch(err){}});
+try{musicTrack=Math.max(0,Math.min(4,Number(localStorage.getItem("ultimate-clicker-music-track")||0)));$("musicSelect").value=String(musicTrack);}catch(e){}
+applyVolume();
+let noteTimer;
+function note(t){$("note").textContent=t;clearTimeout(noteTimer);noteTimer=setTimeout(()=>$("note").textContent="Progresso salvo automaticamente neste dispositivo.",3000);}
+// Define o saldo diretamente. Atualiza a interface e persiste o estado.
+function applyDevBalance(){
+ const field=$("devBalance");
+ const raw=field.value.trim();
+ if(!raw){note("⚠️ Digite o novo saldo antes de confirmar.");field.focus();return;}
+ // Aceita dígitos e separadores de milhar usuais.
+ if(!/^\d[\d.,\s]*$/.test(raw)){note("⚠️ Digite um saldo numérico válido.");field.focus();return;}
+ const digits=raw.replace(/[.,\s]/g,"");
+ if(!digits || digits.length>100){note("⚠️ Saldo inválido ou grande demais.");field.focus();return;}
+ try{
+  const amount=BigInt(digits);
+  s.money=amount;
+  s.total=amount > s.total ? amount : s.total;
+  render();
+  const saved=save();
+  note(saved?"✅ Saldo definido com sucesso!":"⚠️ Saldo alterado, mas o navegador não conseguiu salvar.");
+  field.value="";
+  uiSound();
+ }catch(err){
+  console.error("Falha ao definir saldo:",err);
+  note("⚠️ Erro ao definir o saldo. Verifique o valor digitado.");
+ }
+}
+$("devBalanceApply").addEventListener("click",applyDevBalance);
+$("devBalance").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();applyDevBalance();}});
+let shopPage=0;
+let shopMode="buy",shopQuantity=1;
+// Não reconstruir a lista durante o gesto de rolagem no Android.
+let shopTouchActive=false,shopNeedsRender=false;
+const shopTrackEl=$("items");
+shopTrackEl.addEventListener("touchstart",()=>{shopTouchActive=true;},{passive:true});
+function finishShopTouch(){if(!shopTouchActive)return;shopTouchActive=false;if(shopNeedsRender){shopNeedsRender=false;render();}}
+shopTrackEl.addEventListener("touchend",finishShopTouch,{passive:true});
+shopTrackEl.addEventListener("touchcancel",finishShopTouch,{passive:true});
+shopTrackEl.addEventListener("pointerdown",e=>{if(e.pointerType==="touch")shopTouchActive=true;},{passive:true});
+window.addEventListener("pointerup",e=>{if(e.pointerType==="touch")finishShopTouch();},{passive:true});
+window.addEventListener("pointercancel",finishShopTouch,{passive:true});
+function updateShopNav(page){page=Math.max(0,Math.min(shopPageCount()-1,Number.isFinite(Number(page))?Number(page):0));shopPage=page;const dots=$("shopDots");if(!dots)return;if(dots.children.length!==shopPageCount()){dots.innerHTML="";for(let i=0;i<shopPageCount();i++){const d=document.createElement("button");d.type="button";d.className="shop-dot";d.setAttribute("aria-label","Ir para grupo "+(i+1));d.onclick=()=>goShopPage(i);dots.append(d);}}[...dots.children].forEach((d,i)=>{d.classList.toggle("active",i===page);d.setAttribute("aria-current",i===page?"page":"false");});$("shopPageLabel").textContent="Grupo "+(page+1)+" de "+shopPageCount()+" · Itens "+(page*10+1)+"–"+Math.min(shopVisibleCount(),page*10+10);const scrub=$("shopScrubber"),track=$("items");if(scrub&&document.activeElement!==scrub){const max=Math.max(1,track.scrollHeight-track.clientHeight);scrub.value=String(Math.round(track.scrollTop/max*1000));}}
+function goShopPage(page){const t=$("items"),p=Math.max(0,Math.min(shopPageCount()-1,Number(page)||0)),pane=t.children[p];if(pane){t.scrollTo({top:pane.offsetTop-t.offsetTop,behavior:"auto"});updateShopNav(p);}}
+$("items").addEventListener("scroll",()=>{const t=$("items"),panes=[...t.children];let page=0;for(let i=0;i<panes.length;i++){if(panes[i].getBoundingClientRect().top-t.getBoundingClientRect().top<=8)page=i;}updateShopNav(page);},{passive:true});
+$("shopScrubber").max="1000";$("shopScrubber").step="1";$("shopScrubber").value="0";
+$("shopScrubber").addEventListener("input",e=>{const t=$("items"),max=Math.max(0,t.scrollHeight-t.clientHeight);t.scrollTop=max*(Number(e.target.value)/1000);});
+
+function formatPlayedTime(sec){sec=Math.max(0,Math.floor(sec));const h=Math.floor(sec/3600),m=Math.floor((sec%3600)/60),ss=sec%60;return h?`${h}h ${m}m ${ss}s`:m?`${m}m ${ss}s`:`${ss}s`; }
+let rebirthWasReady=false,rebirthToastTimer=null,lastCursorVisualCount=-1;
+function showRebirthToast(){const t=$("rebirthToast");t.textContent="✨ Rebirth liberado! Encontre no menu principal ou na aba Upgrades → Abrir Rebirth.";t.classList.add("show");clearTimeout(rebirthToastTimer);rebirthToastTimer=setTimeout(()=>t.classList.remove("show"),5200);}
+function render(){
+ const cookieMode=displaySettings.mode!=="pepper",unitShort=cookieMode?" 🍪":" 🌶️";
+ $("playedTime").textContent=formatPlayedTime(localStats.playedSeconds||0);$("clicksTotalStat").textContent=s.clicks.toLocaleString("pt-BR");$("money").textContent=fmt(s.money)+(cookieMode?" cookies 🍪":" pimentas 🌶️");$("rebCountTop").textContent=fmt(s.reb);$("rebCountShop").textContent="🔄 Rebirths: "+fmt(s.reb);$("clicksCount").textContent=s.clicks.toLocaleString("pt-BR");$("gain").textContent="+"+fmt(gain())+unitShort;$("cps").textContent=fmt(BigInt(cps()));$("cps").parentElement.lastChild.textContent=cookieMode?" cookies por segundo":" pimentas por segundo";$("hands").style.display=s.ups[0]>0?"block":"none";const swarm=$("cursorSwarm"),cursorCount=s.levels[0]||0;if(swarm&&cursorCount!==lastCursorVisualCount){swarm.innerHTML="";for(let ci=0;ci<cursorCount;ci++){const cur=document.createElement("span"),angle=(ci*137.5)*Math.PI/180,r=28+(ci%4)*7;cur.textContent="🖱️";cur.style.left=(50+Math.cos(angle)*r/1.8)+"%";cur.style.top=(50+Math.sin(angle)*r/1.8)+"%";cur.style.animationDelay=(ci%7)*-.13+"s";swarm.append(cur);}lastCursorVisualCount=cursorCount;}
+ const reminder=$("purchaseReminder");
+ let next=-1;for(let pos=1;pos<shopOrder.length;pos++){const i=shopOrder[pos];if(!shopItemUnlocked(i)){next=i;break;}}if(next>=0){const prev=shopPreviousIndex(next),missing=Math.max(0,1-(s.levels[prev]||0));reminder.textContent="🔒 Falta "+missing+" unidade de "+productLabel(products[prev],prev)+" para revelar o próximo item da loja.";}else{let best=-1,bestCost=null;for(let i=0;i<products.length;i++){const c=itemPrice(i);if(c>s.money&&(bestCost===null||c<bestCost)){best=i;bestCost=c;}}if(best<0){best=products.length-1;bestCost=itemPrice(best);}const missing=bestCost>s.money?bestCost-s.money:0n;reminder.textContent=missing>0n?"🛒 Faltam "+fmt(missing)+unitShort+" para comprar "+productLabel(products[best],best)+".":"🛒 Você já pode comprar "+productLabel(products[best],best)+"!";}
+
+ let g=goal();$("goal").textContent="Meta: "+fmt(g)+unitShort;$("rebstate").textContent=s.money>=g?"Disponível!":"Em progresso";
+ const readyNow=s.money>=g;if(readyNow&&!rebirthWasReady)showRebirthToast();rebirthWasReady=readyNow;
+ $("bar").style.width=(s.money>=g?100:Number(s.money*10000n/g)/100)+"%";$("rebbtn").disabled=s.money<g;$("rebbtn").textContent="🔄 FAZER REBIRTH ("+fmt(g)+")";$("rebirthDock").querySelector("strong").textContent=cookieMode?"🔄 RENASCIMENTO DO cookie":"🔄 RENASCIMENTO DO cookie";
+ const track=$("items"),oldPage=shopPage,oldScrollTop=track.scrollTop;
+ if(shopTouchActive){shopNeedsRender=true;}else{track.innerHTML="";
+ const visibleCount=shopVisibleCount(),pageCount=shopPageCount();for(let page=0;page<pageCount;page++){const pane=document.createElement("div");pane.className="shop-page";pane.dataset.page=page;shopOrder.slice(page*10,Math.min(page*10+10,visibleCount)).forEach((i,j)=>{const p=products[i],unlocked=shopItemUnlocked(i),level=s.levels[i],row=document.createElement("div");row.className="item";const info=document.createElement("div"),title=document.createElement("strong"),small=document.createElement("small");if(unlocked){title.textContent=productLabel(p,i);const unit=p.kind==="auto"?" cookie/s por nível":" por clique";small.textContent=(p.kind==="auto"?"Produz +"+fmt(p.bonus)+unit:"Aumenta +"+fmt(p.bonus)+unit)+" · Possui: "+level; }else{title.textContent="🔒 ???";const prev=shopPreviousIndex(i),need=prev>=0?Math.max(0,1-(s.levels[prev]||0)):0;small.textContent=prev>=0?"Falta "+need+" unidade de "+productLabel(products[prev],prev):"Bloqueado";}info.append(title,small);const b=document.createElement("button");b.className="buy";let amount=shopQuantity==="max"?1000:shopQuantity;let totalCost=0n;for(let k=0;k<amount;k++)totalCost+=s.dev.prices?.[i]?BigInt(String(s.dev.prices[i]).replace(/\D/g,"")):scaledPrice(price(p.base,level+k),s.dev.shop);let refund=0n;for(let k=0;k<Math.min(amount,level);k++)refund+=price(p.base,level-1-k)/2n;if(unlocked)small.textContent+=" · Próximo: "+fmt(itemPrice(i))+unitShort;if(shopMode==="buy"){b.disabled=!unlocked||s.money<totalCost;b.textContent=!unlocked?"Bloqueado":s.money>=totalCost?"Comprar · "+fmt(totalCost):"Faltam "+fmt(totalCost-s.money); }else{b.disabled=!unlocked||level===0;b.textContent=level===0?"Sem unidades":"Vender · +"+fmt(refund);}b.onclick=()=>{if(!unlocked)return;if(shopMode==="buy"){let bought=0,cost=0n;while(bought<amount&&s.money>=price(p.base,s.levels[i])){const v=s.dev.prices?.[i]?BigInt(String(s.dev.prices[i]).replace(/\D/g,"")):scaledPrice(price(p.base,s.levels[i]),s.dev.shop);s.money-=v;cost+=v;s.levels[i]++;bought++;}if(bought){s.bought+=bought;localStats.purchases+=bought;saveStats();cashSound();note("Comprou "+bought+"x "+productLabel(p,i)+"!");}}else{const sold=Math.min(amount,s.levels[i]);let gainBack=0n;for(let k=0;k<sold;k++){s.levels[i]--;gainBack+=price(p.base,s.levels[i])/2n;}s.money+=gainBack;note("Vendeu "+sold+"x "+productLabel(p,i)+" por "+fmt(gainBack)+unitShort+"!");}save();render();};row.append(info,b);pane.append(row);});track.append(pane);}
+ track.scrollTop=Math.min(oldScrollTop,Math.max(0,track.scrollHeight-track.clientHeight));updateShopNav(oldPage);}
+ $("upgrades").innerHTML="";
+ const itemUpgradeHeading=document.createElement("p");itemUpgradeHeading.className="muted";itemUpgradeHeading.textContent="Melhore os itens conforme forem sendo revelados. Os primeiros upgrades também reforçam seus cookies por clique; cada nível aumenta em 25% o efeito do item.";$("upgrades").append(itemUpgradeHeading);
+ const upgradeVisible=shopVisibleCount();
+ shopOrder.slice(0,upgradeVisible).forEach((i,pos)=>{const p=products[i],unlocked=shopItemUnlocked(i),lv=s.itemUps[i]||0,row=document.createElement("div");row.className="item";const info=document.createElement("div"),title=document.createElement("strong"),desc=document.createElement("small"),cost=document.createElement("small");if(unlocked){const c=price(p.base*5n,lv,145);title.textContent="⬆️ "+productLabel(p,i)+" (nível "+lv+")";desc.textContent="Aumenta em 25% o efeito deste item por nível · "+(p.kind==="auto"?"produção automática":"cookies por clique");cost.textContent="Próximo upgrade: "+fmt(c)+unitShort;info.append(title,desc,cost);const b=document.createElement("button");b.className="buy";b.disabled=s.money<c;b.textContent=s.money>=c?"Melhorar":"Faltam "+fmt(c-s.money);b.onclick=()=>{if(s.money<c)return;s.money-=c;s.itemUps[i]++;s.bought++;localStats.purchases++;saveStats();cashSound();save();render();note("Upgrade do item melhorado!");};row.append(info,b);}else{const prev=shopPreviousIndex(i),missing=prev>=0?Math.max(0,1-(s.levels[prev]||0)):1;title.textContent="🔒 ???";desc.textContent=prev>=0?"Falta "+missing+" unidade de "+productLabel(products[prev],prev):"Bloqueado";info.append(title,desc);const b=document.createElement("button");b.className="buy";b.disabled=true;b.textContent="Bloqueado";row.append(info,b);}$("upgrades").append(row);});
+ const genericHeading=document.createElement("p");genericHeading.className="muted";genericHeading.textContent="Melhorias gerais";$("upgrades").append(genericHeading);
+ upDefs.forEach((u,i)=>{let lv=s.ups[i],c=scaledPrice(price(u.base,lv,125),s.dev.up),row=document.createElement("div");row.className="item";let info=document.createElement("div"),title=document.createElement("strong"),desc=document.createElement("small"),costline=document.createElement("small");title.textContent=(cookieMode?u.name:u.name.replace(/cookie|cookies/gi,"pimenta").replace("🍪","🌶️"))+" ("+lv+" níveis)";desc.textContent=cookieMode?u.desc:u.desc.replace(/cookies/gi,"pimentas").replace(/cookie/gi,"pimenta");const meter=document.createElement("div");meter.className="upgrade-meter";const fill=document.createElement("span");fill.style.width=Math.min(100,lv%100)+"%";meter.append(fill);const count=document.createElement("small");count.textContent="🟩 "+lv+" níveis · ilimitado";costline.textContent="Próximo preço: "+fmt(c)+unitShort;info.append(title,desc,count,meter,costline);let b=document.createElement("button");b.className="buy";b.disabled=s.money<c;b.textContent=s.money>=c?"Comprar":"Faltam "+fmt(c-s.money);b.onclick=()=>{let v=scaledPrice(price(u.base,s.ups[i],125),s.dev.up);if(s.money<v)return;s.money-=v;s.ups[i]++;s.bought++;localStats.purchases++;saveStats();cashSound();jiggle(row);save();render();note("Upgrade comprado!");};row.append(info,b);$("upgrades").append(row);});
+ const tankPanel=$("tankPanel");tankPanel.hidden=!s.tankEnabled;$("tankUpgrades").innerHTML="";if(s.tankEnabled){tankDefs.forEach((u,i)=>{const lv=s.tankUps[i],c=price(u.base,lv,130),row=document.createElement("div");row.className="item";const info=document.createElement("div"),title=document.createElement("strong"),desc=document.createElement("small"),cost=document.createElement("small");title.textContent=(cookieMode?u.name:u.name.replace(/cookie|cookies/gi,"pimenta").replace("🍪","🌶️"))+" ("+lv+" níveis)";desc.textContent=cookieMode?u.desc:u.desc.replace(/cookies/gi,"pimentas").replace(/cookie/gi,"pimenta");cost.textContent="Próximo preço: "+fmt(c)+unitShort;info.append(title,desc,cost);const b=document.createElement("button");b.className="buy";b.disabled=s.money<c;b.textContent=s.money>=c?"Comprar":"Faltam "+fmt(c-s.money);b.onclick=()=>{const v=price(u.base,s.tankUps[i],130);if(s.money<v)return;s.money-=v;s.tankUps[i]++;s.bought++;localStats.purchases++;saveStats();cashSound();save();render();note("Upgrade do tanque comprado!");};row.append(info,b);$("tankUpgrades").append(row);});}
+ const done=objectiveDone();$("objectiveCount").textContent=done+"/8";$("objectiveBar").style.width=(done/8*100)+"%";
+ $("objectives").innerHTML="";objectives.forEach((o,i)=>{let el=document.createElement("div");el.className="objective"+(o.done()?" done":"");let info=document.createElement("span"),name=document.createElement("span"),desc=document.createElement("small"),status=document.createElement("b");name.textContent=(o.done()?"✅ ":"🔒 ")+o.name;desc.textContent=o.desc+" · "+objectiveProgress(i);desc.style.cssText="display:block;color:var(--muted)";info.append(name,desc);status.textContent=o.done()?"Concluído":"Pendente";el.append(info,status);$("objectives").append(el);});
+ $("devPanel").hidden=!devUnlocked();$("menuDev").hidden=!devUnlocked();refreshDockAdmin();
+ if(devUnlocked()){["devClick","devShop","devUp","devItemMult"].forEach((id,i)=>{const keys=["click","shop","up","itemMult"];if(document.activeElement!==$(id))$(id).value=s.dev[keys[i]]??[0,1,1,1][i];});}
+}
+let renderQueued=false,renderTimer=0,saveTimer=0,popupTimer=0,popupNode=null;
+function queueRender(){if(renderQueued)return;renderQueued=true;renderTimer=setTimeout(()=>{renderQueued=false;render();},140);}
+function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>{save();saveStats();},900);}
+function popup(){if(!popupNode){popupNode=document.createElement("span");popupNode.className="float";$("tap").append(popupNode);}popupNode.textContent="+"+fmt(gain())+(displaySettings.mode==="pepper"?" 🌶️":" 🍪");popupNode.style.left="50%";popupNode.style.top="25%";popupNode.style.transform="translateX(-50%)";popupNode.classList.remove("float");void popupNode.offsetWidth;popupNode.classList.add("float");clearTimeout(popupTimer);popupTimer=setTimeout(()=>{if(popupNode)popupNode.remove();popupNode=null;},900);}
+
+$("tap").addEventListener("click",()=>{startMusic();clickSound();s.clicks++;localStats.clicks++;add(gain());popup();queueRender();queueSave();},{passive:true});
+function confettiBurst(){
+ if(document.body.classList.contains("confetti-off"))return;
+ const bits=["🎉","✨","🍪","⭐","🎊","🟡","🟠"];
+ for(let i=0;i<75;i++){const el=document.createElement("span");el.className="confetti";el.textContent=bits[Math.floor(Math.random()*bits.length)];el.style.left=Math.random()*100+"vw";el.style.setProperty("--drift",(Math.random()*240-120)+"px");el.style.animationDuration=(1.8+Math.random()*1.6)+"s";el.style.animationDelay=(Math.random()*.45)+"s";document.body.append(el);setTimeout(()=>el.remove(),4000);}
+}
+$("rebbtn").onclick=()=>{if(s.money<goal())return;cashSound();jiggle($("rebbtn"));s.money=0n;s.reb++;s.levels=Array(50).fill(0);save();render();beep(450,.55);confettiBurst();note("🎉 REBIRTH! Sua plantação evoluiu!");};
+$("music").onclick=()=>{uiSound();musicOn=!musicOn;if(musicOn){$("music").textContent="🎵 Música: ligada";startMusic();}else{$("music").textContent="🔇 Música: desligada";stopMusic();}};
+let appScreen="home";
+function showHub(){
+ $("shopControls").hidden=true;
+ appScreen="menu";document.body.classList.add("menu-open");
+ $("screenToggle").textContent=(displaySettings.mode==="pepper"?"🌶️":"🍪");$("screenToggle").setAttribute("aria-label","Voltar para o jogo");$("screenToggle").title="Voltar para a tela inicial";
+ $("clickerview").hidden=true;extrasPanel.hidden=false;$ ("hubMenu").hidden=false;
+ ["shopview","upview","objectivesview","rebirthDock"].forEach(id=>$(id).hidden=true);
+ $("menuDev").hidden=!devUnlocked();refreshDockAdmin();
+}
+function goHome(){
+ $("shopControls").hidden=true;
+ appScreen="home";document.body.classList.remove("menu-open");
+ $("screenToggle").textContent="📘";$("screenToggle").setAttribute("aria-label","Abrir menu");$("screenToggle").title="Abrir menu";
+ $("clickerview").hidden=false;$("hubMenu").hidden=true;
+ const home=displaySettings.homeLayout||"menu";const dash=home!=="menu";
+ document.body.classList.toggle("home-dashboard",dash);document.body.classList.toggle("home-show-rebirth",displaySettings.rebirth==="show");$("cartQuickMenu").querySelectorAll("button[data-dest]").forEach(b=>{const d=b.dataset.dest;b.hidden=(d==="shop"&&["shop","all"].includes(home))||(d==="up"&&["up","all"].includes(home))||(d==="objectives"&&["objectives","all"].includes(home));});extrasPanel.hidden=!(dash||displaySettings.rebirth==="show");
+ $("objectivesview").hidden=!(home==="objectives"||home==="all");
+ $("shopview").hidden=!(home==="shop"||home==="all");
+ $("upview").hidden=!(home==="up"||home==="all");
+ $("rebirthDock").hidden=displaySettings.rebirth!=="show";$("cartQuickMenu").hidden=true;$("cartLauncher").setAttribute("aria-expanded","false");
+}
+function selectTab(which){
+ $("shopControls").hidden=!(which==="shop"||which==="up");
+ $("buildingsTab").classList.toggle("active",which==="shop");$("upgradesTab").classList.toggle("active",which==="up");
+ selectedTab=which;appScreen="menu";document.querySelectorAll("#cookieBottomNav [data-screen]").forEach(b=>b.classList.toggle("active",b.dataset.screen===(which==="up"?"shop":which==="rebirth"?"special":which==="objectives"?"stats":which)));document.body.classList.remove("home-dashboard");$("cartQuickMenu").hidden=true;document.body.classList.add("menu-open");
+ $("clickerview").hidden=true;extrasPanel.hidden=false;$("hubMenu").hidden=false;
+ $("screenToggle").textContent=(displaySettings.mode==="pepper"?"🌶️":"🍪");$("screenToggle").setAttribute("aria-label","Voltar para o jogo");$("screenToggle").title="Voltar para a tela inicial";
+ $("shopview").hidden=which!=="shop";$("upview").hidden=which!=="up";$("objectivesview").hidden=which!=="objectives";$("rebirthDock").hidden=which!=="rebirth";
+ $("menuDev").hidden=!devUnlocked();refreshDockAdmin();
+ ["clicker","objectives","shop","up"].forEach(name=>{const old=$("tab"+name);if(old)old.classList.toggle("active",name===which);});
+ if(which==="shop")requestAnimationFrame(()=>{updateShopNav(shopPage);});
+}
+function setShopMode(mode){shopMode=mode;$("buyMode").classList.toggle("active",mode==="buy");$("sellMode").classList.toggle("active",mode==="sell");render();}
+$("buyMode").onclick=()=>setShopMode("buy");$("sellMode").onclick=()=>setShopMode("sell");
+document.querySelectorAll("#shopControls [data-qty]").forEach(b=>b.onclick=()=>{shopQuantity=b.dataset.qty==="max"?"max":Number(b.dataset.qty);document.querySelectorAll("#shopControls [data-qty]").forEach(x=>x.classList.toggle("active",x===b));render();});
+$("buildingsTab").onclick=()=>{selectTab("shop");$("buildingsTab").classList.add("active");$("upgradesTab").classList.remove("active");};
+$("upgradesTab").onclick=()=>{selectTab("up");$("upgradesTab").classList.add("active");$("buildingsTab").classList.remove("active");};
+document.querySelectorAll("#cookieBottomNav [data-screen]").forEach(b=>b.onclick=()=>{const dest=b.dataset.screen;document.querySelectorAll("#cookieBottomNav [data-screen]").forEach(x=>x.classList.toggle("active",x===b));if(dest==="cookie")goHome();else if(dest==="shop")selectTab("shop");else if(dest==="special")selectTab("rebirth");else if(dest==="stats")selectTab("objectives");else if(dest==="misc"){showHub();$("settingsOverlay").style.display="flex";}});
+$("cartLauncher").onclick=()=>{uiSound();const menu=$("cartQuickMenu");menu.hidden=!menu.hidden;$("cartLauncher").setAttribute("aria-expanded",String(!menu.hidden));};
+$("cartQuickMenu").querySelectorAll("button[data-dest]").forEach(b=>b.addEventListener("click",()=>{uiSound();const dest=b.dataset.dest;if(dest==="clicker")goHome();else selectTab(dest);$("cartQuickMenu").hidden=true;$("cartLauncher").setAttribute("aria-expanded","false");}));
+document.addEventListener("click",e=>{if(!e.target.closest("#cartLauncher")&&!e.target.closest("#cartQuickMenu")){$("cartQuickMenu").hidden=true;$("cartLauncher").setAttribute("aria-expanded","false");}});
+$("screenToggle").onclick=()=>{uiSound();if(appScreen==="home")showHub();else goHome();};
+$("menuShop").onclick=()=>{uiSound();selectTab("shop");};
+$("menuUp").onclick=()=>{uiSound();selectTab("up");};
+$("menuObjectives").onclick=()=>{uiSound();selectTab("objectives");};
+$("menuRebirth").onclick=()=>{uiSound();selectTab("rebirth");};
+$("upgradesRebirthButton").onclick=()=>{uiSound();selectTab("rebirth");};
+$("menuDev").onclick=()=>{if(!devUnlocked())return;uiSound();selectTab("objectives");requestAnimationFrame(()=>$("devPanel").scrollIntoView({behavior:"smooth",block:"start"}));};
+
+
+
+function refreshDockAdmin(){}
+$("tabclicker").onclick=()=>{uiSound();goHome();$("cartMenu").hidden=true;};
+$("tabobjectives").onclick=()=>{uiSound();selectTab("objectives");};
+$("cartMenuToggle").onclick=()=>{uiSound();showHub();};
+$("tabshop").onclick=()=>{uiSound();selectTab("shop");};
+$("tabup").onclick=()=>{uiSound();selectTab("up");};
+$("save").onclick=()=>{uiSound();startMusic();note(save()?"💾 Jogo salvo!":"Não foi possível salvar.");};
+$("reset").onclick=()=>{uiSound();if(!confirm("Apagar todo o progresso?"))return;gameName="";s={money:0n,total:0n,reb:0n,levels:Array(50).fill(0),itemUps:Array(30).fill(0),ups:Array(10).fill(0),tankEnabled:false,tankUps:[0,0,0],clicks:0,bought:0,dev:{click:0,shop:1,up:1,itemMult:1,prices:Array(50).fill("")}};$("tankToggle").checked=false;buildDevPriceEditor();save();render();askGameName();note("Jogo reiniciado. Escolha o nome da nova partida.");};
+let last=Date.now(),fraction=0;
+let statsClock=0;
+setInterval(()=>{let now=Date.now(),dt=Math.min(1,(now-last)/1000);last=now;localStats.playedSeconds=(localStats.playedSeconds||0)+dt;statsClock+=dt;fraction+=cps()*dt;let count=Math.floor(fraction);if(count>0){fraction-=count;add(BigInt(count));queueRender();}if(statsClock>=5){statsClock=0;saveStats();}},100);
+setInterval(()=>{save();saveStats();updateOfflineTimestamp();},5000);buildDevPriceEditor();applyDisplaySettings();goHome();refreshDockAdmin();collectOfflineFarm();render();
+if("serviceWorker" in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("./sw.js").catch(()=>{});
+})();
+</script>
+</body></html>

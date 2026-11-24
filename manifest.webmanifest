@@ -1,0 +1,9 @@
+{
+  "name": "Ultimate Clicker",
+  "short_name": "Ultimate Clicker",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#24152b",
+  "theme_color": "#e66ba9",
+  "description": "Construa seu império de cookies: fábricas, árvores, upgrades e universos doces. Funciona offline depois da instalação."
+}

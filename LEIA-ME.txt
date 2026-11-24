@@ -1,0 +1,27 @@
+cookie CLICKER V40
+
+Interface renovada para o universo cookie: contador e clique principal de cookies, loja temática com 30 itens originais (incluindo Árvore de cookies, Fábrica Açucarada, cookie City e cookie Supremo), upgrades e rebirth com linguagem de confeitaria.
+
+Em Configurações > Universo do jogo, alterne entre cookie Clicker e Pimenta Clássica. No modo cookie, escolha também entre seis paletas: Morango & Granulado, Chocolate, Blueberry, Menta, Galáxia e Pôr do Sol.
+
+O progresso salvo anteriormente é mantido no armazenamento local do navegador. Para atualizar uma instalação existente, feche e abra o jogo novamente para carregar a nova versão.
+
+V39: carrinho de navegação rápida abaixo das configurações com Loja, Upgrade, Objetivos e cookie. Em Configurações > Conteúdo da tela inicial, escolha Clicker + menu, Loja + clicker, Upgrades + clicker, Objetivos + clicker ou Tudo junto + clicker. Corrigida a aplicação das seis paletas do universo cookie.
+
+V39: temas também disponíveis no universo Pimenta, menu do carrinho oculta abas que já estão na tela inicial, opção para mostrar/ocultar Rebirth na tela inicial, gotas de chocolate animadas e botão principal maior.
+
+V40: loja disponível desde o início; começa com 2 itens revelados e os outros 28 aparecem como ??? até atingir a meta de cookies acumulados de cada item. Rebirth não é mais necessário para comprar. Loja reduzida para 30 itens e 3 grupos.
+
+
+V41: primeiro Rebirth exige 10.000 cookies; cada Rebirth dobra permanentemente a produção por toque e automática. Som de clique substituído por efeito sintetizado inspirado em teclado mecânico (estalo + thock), com buffer reutilizado e limitação de disparos muito próximos. Otimização de desempenho: cliques não reconstroem a loja nem gravam no armazenamento a cada evento; renderização e salvamento são agrupados, e estatísticas são persistidas em intervalos maiores.
+
+
+V41 (atualização de conteúdo): loja reorganizada em 30 itens, sendo 15 de produção automática e 15 de bônus por clique. O primeiro item é o Cursor de Mouse: cada compra adiciona um cursor visual ao cookie e gera 1 cookie por segundo. A aba Upgrades agora inclui melhorias individuais para cada item da loja (+25% de efeito por nível). Na primeira entrada, o jogador escolhe o nome da partida; ele permanece salvo até reiniciar o progresso. As configurações avisam que o layout antigo está bugado e pode impedir o retorno ao layout novo.
+
+V41.1 (personalização visual):
+- O nome da partida fica visível no topo da tela durante o jogo.
+- A loja mantém os dois primeiros itens no começo e embaralha os demais, com a ordem salva no dispositivo.
+- Em Configurações, “Detalhamento da interface” permite alternar entre a aparência normal e uma versão detalhada, com painéis, itens e botão principal mais trabalhados.
+
+
+V46: corrigida a rolagem da Loja no Android. A lista não é reconstruída enquanto o dedo está arrastando e a posição exata é preservada entre atualizações. A faixa Construções/Melhorias permanece visível tanto na Loja quanto em Melhorias. Cache atualizado para V46.
