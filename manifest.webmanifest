@@ -1,9 +1,27 @@
+
 {
-  "name": "Ultimate Clicker",
-  "short_name": "Ultimate Clicker",
-  "start_url": "./index.html",
+  "id": "./",
+  "name": "Cookie Clicker",
+  "short_name": "Clicker",
+  "description": "Um jogo clicker divertido.",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#24152b",
-  "theme_color": "#e66ba9",
-  "description": "Construa seu império de cookies: fábricas, árvores, upgrades e universos doces. Funciona offline depois da instalação."
+  "orientation": "portrait",
+  "background_color": "#ff8a00",
+  "theme_color": "#ff6a00",
+  "icons": [
+    {
+      "src": "./launchericon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
 }
